@@ -1,66 +1,86 @@
 # Python
-__pycache__/
 *.py[cod]
+__pycache__/
 *.pyo
 *.pyd
 *.pyc
 *.egg-info/
 *.eggs/
-*.env
-.env.*
-*.sqlite3
+.env
+*.env.*
 db.sqlite3
-
-# Flask
+*.sqlite3
 instance/
 *.log
 env/
 
-# Pickle files
-*.pkl
-*.pickle
+# Flask
+*.flaskenv
+*.log
+.vscode/
+*.mypy_cache/
+*.pytest_cache/
+htmlcov/
+.coverage
+.cache/
+*.pytest_cache
 
-# Next.js
+# Node.js / Next.js
+node_modules/
 .next/
+out/
 *.env.local
 *.env.development.local
 *.env.test.local
 *.env.production.local
-.env
-
-# Tailwind CSS
-tailwind.config.js
-postcss.config.js
-
-# Node.js
-node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-package-lock.json
-yarn.lock
-
-# MongoDB
-/data/db/
-*.lock
-*.pid
-*.ns
-*.wt
 *.log
-mongod.lock
-WiredTiger
 
-# OS files
+# Jupyter Notebooks
+.ipynb_checkpoints/
+*.ipynb_checkpoint
+*.nbconvert/
+*.nb.html
+
+# Datasets
+datasets/raw/*
+datasets/processed/*
+!datasets/processed/.keep  # Allow empty processed directory if needed
+
+# Models
+*.joblib
+*.pkl
+*.h5
+*.ckpt
+
+# Docker
+*.env
+.dockerignore
+docker-compose.override.yml
+
+# OS Generated Files
 .DS_Store
 Thumbs.db
-
-# Logs
-*.log
-
-# Misc
-.vscode/
-.idea/
-*.bak
+desktop.ini
 *.swp
+*.swo
+*~
+
+# Logs and Debugging
+*.log
+*.trace
+
+# IDE/Editor Specific
+.idea/
+.vscode/
+*.sublime-workspace
+*.sublime-project
+
+# Backup files
+*.bak
+*.bkp
 *.tmp
-*.backup
+*.old
+
+# Test outputs
+*.coverage
+coverage/
