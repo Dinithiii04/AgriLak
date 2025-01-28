@@ -1,0 +1,87 @@
+# Python
+*.py[cod]
+__pycache__/
+*.pyo
+*.pyd
+*.pyc
+*.egg-info/
+*.eggs/
+.env
+*.env.*
+db.sqlite3
+*.sqlite3
+instance/
+*.log
+env/
+
+# Flask
+*.flaskenv
+*.log
+.vscode/
+*.mypy_cache/
+*.pytest_cache/
+htmlcov/
+.coverage
+.cache/
+*.pytest_cache
+venv/
+
+# Node.js / Next.js
+node_modules/
+.next/
+out/
+*.env.local
+*.env.development.local
+*.env.test.local
+*.env.production.local
+*.log
+
+# Jupyter Notebooks
+.ipynb_checkpoints/
+*.ipynb_checkpoint
+*.nbconvert/
+*.nb.html
+
+# Datasets
+datasets/raw/*
+datasets/processed/*
+!datasets/processed/.keep  # Allow empty processed directory if needed
+
+# Models
+*.joblib
+*.pkl
+*.h5
+*.ckpt
+
+# Docker
+*.env
+.dockerignore
+docker-compose.override.yml
+
+# OS Generated Files
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*.swo
+*~
+
+# Logs and Debugging
+*.log
+*.trace
+
+# IDE/Editor Specific
+.idea/
+.vscode/
+*.sublime-workspace
+*.sublime-project
+
+# Backup files
+*.bak
+*.bkp
+*.tmp
+*.old
+
+# Test outputs
+*.coverage
+coverage/
