@@ -14,6 +14,7 @@ db.sqlite3
 # Flask
 instance/
 *.log
+env/
 
 # Pickle files
 *.pkl
