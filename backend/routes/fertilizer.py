@@ -5,7 +5,7 @@ import pandas as pd
 fertilizer_bp = Blueprint('fertilizer', __name__)
 
 # Load the trained model
-model_filename = '../models/fertilizer.joblib'
+model_filename = 'backend/models/Fertilizer_Prediction.pkl'
 loaded_model = joblib.load(model_filename)
 
 @fertilizer_bp.route('/predict', methods=['POST'])
@@ -22,6 +22,7 @@ def predict_fertilizer():
         Phosphorus = data['Phosphorus']
         Potassium = data['Potassium']
 
+        print(pH)
         # Create a DataFrame for the input features
         user_input = pd.DataFrame({
             'pH': [pH],
