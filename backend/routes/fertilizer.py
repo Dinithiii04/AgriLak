@@ -15,21 +15,21 @@ def predict_fertilizer():
         data = request.get_json()
 
         # Extract features from the input data
-        pH = data['pH']
-        Rainfall = data['Rainfall']
-        Temperature = data['Temperature']
         Nitrogen = data['Nitrogen']
         Phosphorus = data['Phosphorus']
         Potassium = data['Potassium']
+        pH = data['pH']
+        Rainfall = data['Rainfall']
+        Temperature = data['Temperature']
 
         # Create a DataFrame for the input features
         user_input = pd.DataFrame({
-            'pH': [pH],
-            'Rainfall': [Rainfall],
-            'Temperature': [Temperature],
             'Nitrogen': [Nitrogen],
             'Phosphorus': [Phosphorus],
             'Potassium': [Potassium],
+            'pH': [pH],
+            'Rainfall': [Rainfall],
+            'Temperature': [Temperature]
         })
 
         # Add missing columns to align with the training data
