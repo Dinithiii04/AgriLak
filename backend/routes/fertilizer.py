@@ -1,56 +1,64 @@
 from flask import Blueprint, request, jsonify
 import joblib
 import pandas as pd
+import numpy as np
+from pymongo.errors import ServerSelectionTimeoutError
+from sklearn.preprocessing import StandardScaler
+from database import mongo
+from db.fertilizer_model import FertilizerModel
 
 fertilizer_bp = Blueprint('fertilizer', __name__)
 
-# Load the trained model
-model_filename = 'backend/models/Fertilizer_Prediction.pkl'
-loaded_model = joblib.load(model_filename)
+# Load the Random Forest model and scaler
+rf_model = joblib.load('models/fertilizer/rf_model.joblib')
+scaler = joblib.load('models/fertilizer/scaler.pkl')
+
+
+# Fertilizer mapping
+fertilizer_mapping = {0: '50:26:26 NPK', 1: 'Urea'}
+
+# Prediction function
+def predict_fertilizer_rf(N, P, K, pH, Rainfall, Temperature):
+    user_input = np.array([[N, P, K, pH, Rainfall, Temperature]])
+    scaled_input = scaler.transform(user_input)
+    predicted_class = rf_model.predict(scaled_input)[0]
+    recommended_fertilizer = fertilizer_mapping[predicted_class]
+    return recommended_fertilizer
+
+# @fertilizer_bp.route('/ping', methods=['GET'])
+# def ping():
+#     try:
+#         mongo.db.command("ping")  # Test database connection
+#         return jsonify({'status': 'MongoDB connected successfully'}), 200
+#     except ServerSelectionTimeoutError:
+#         return jsonify({'error': 'Cannot connect to MongoDB. Check your connection.'}), 500
+#     except Exception as e:
+#         return jsonify({'error': str(e)}), 500
+
 
 @fertilizer_bp.route('/predict', methods=['POST'])
 def predict_fertilizer():
     try:
-        # Get the input data from the request
         data = request.get_json()
 
-        # Extract features from the input data
-        Nitrogen = data['Nitrogen']
-        Phosphorus = data['Phosphorus']
-        Potassium = data['Potassium']
-        pH = data['pH']
-        Rainfall = data['Rainfall']
-        Temperature = data['Temperature']
+        # Extract features
+        Nitrogen = data.get('Nitrogen')
+        Phosphorus = data.get('Phosphorus')
+        Potassium = data.get('Potassium')
+        pH = data.get('pH')
+        Rainfall = data.get('Rainfall')
+        Temperature = data.get('Temperature')
 
-        # Create a DataFrame for the input features
-        user_input = pd.DataFrame({
-            'Nitrogen': [Nitrogen],
-            'Phosphorus': [Phosphorus],
-            'Potassium': [Potassium],
-            'pH': [pH],
-            'Rainfall': [Rainfall],
-            'Temperature': [Temperature]
-        })
+        # Validate inputs
+        if None in [Nitrogen, Phosphorus, Potassium, pH, Rainfall, Temperature]:
+            return jsonify({'error': 'All fields are required.'}), 400
 
-        # Add missing columns to align with the training data
-        missing_cols = list(set(loaded_model.feature_names_in_) - set(user_input.columns))
-        user_input = pd.concat([user_input, pd.DataFrame(columns=missing_cols)], axis=1).fillna(0)
+        # Perform prediction
+        fertilizer = predict_fertilizer_rf(Nitrogen, Phosphorus, Potassium, pH, Rainfall, Temperature)
 
-        # Convert object dtype columns to numeric to avoid FutureWarning
-        user_input = user_input.infer_objects(copy=False)
-
-        # Reorder columns to match the training data
-        user_input = user_input[loaded_model.feature_names_in_]
-
-        # Predict the NPK ratio using the loaded model
-        predicted_npk = loaded_model.predict(user_input.values)
-
-        # Convert NumPy float32 to Python float before returning JSON
-        return jsonify({
-            'Nitrogen': float(predicted_npk[0][0]),
-            'Phosphorus': float(predicted_npk[0][1]),
-            'Potassium': float(predicted_npk[0][2])
-        })
+        # Return the response
+        return jsonify({'recommended_fertilizer': fertilizer}), 200
 
     except Exception as e:
-        return jsonify({'error': str(e)}), 400
+        return jsonify({'error': str(e)}), 500
+
