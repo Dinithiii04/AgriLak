@@ -1,23 +1,36 @@
 from flask import Flask
+from flask_bcrypt import Bcrypt
+from flask_jwt_extended import JWTManager
 from database import init_db
+from dotenv import load_dotenv
+import os
 
+# Load environment variables
+load_dotenv()
 
-# Initialize Flask App
 def create_app():
     app = Flask(__name__)
-    init_db(app)
 
+    # Set JWT Secret Key
+    app.config['JWT_SECRET_KEY'] = os.environ.get('JWT_SECRET_KEY', 'your_secret_key')
+
+    # Initialize DB and JWT
+    init_db(app)
+    jwt = JWTManager(app)
+    bcrypt = Bcrypt(app)
 
     # Import and register Blueprints
-    from routes.irrigation import irrigation_bp
+    from utils.auth import auth_bp
     from routes.fertilizer import fertilizer_bp
+    from routes.user import user_bp
 
-    app.register_blueprint(irrigation_bp, url_prefix='/irrigation')
+    app.register_blueprint(auth_bp, url_prefix='/auth')
     app.register_blueprint(fertilizer_bp, url_prefix='/fertilizer')
+    app.register_blueprint(user_bp, url_prefix='/user')
+
 
     return app
 
-# Run the application
 if __name__ == '__main__':
     app = create_app()
     app.run(debug=True)
