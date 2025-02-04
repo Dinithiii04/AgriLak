@@ -1,13 +1,12 @@
 from flask import Blueprint, request, jsonify
+from flask_jwt_extended import jwt_required, get_jwt_identity
 import joblib
 import numpy as np
-from pymongo.errors import ServerSelectionTimeoutError
-from database import mongo
 from db.fertilizer_model import FertilizerModel
 
 fertilizer_bp = Blueprint('fertilizer', __name__)
 
-# Load the Random Forest model and scaler
+# Load Model and Scaler
 try:
     rf_model = joblib.load('models/fertilizer/rf_model.joblib')
     scaler = joblib.load('models/fertilizer/scaler.pkl')
@@ -16,6 +15,7 @@ except Exception as e:
     rf_model, scaler = None, None
 
 fertilizer_mapping = {0: '50:26:26 NPK', 1: 'Urea'}
+
 
 def predict_fertilizer_rf(N, P, K, pH, Rainfall, Temperature):
     try:
@@ -27,48 +27,35 @@ def predict_fertilizer_rf(N, P, K, pH, Rainfall, Temperature):
         print(f"Prediction error: {e}")
         return None
 
+
 @fertilizer_bp.route('/predict', methods=['POST'])
+@jwt_required()
 def predict_fertilizer():
-    try:
-        data = request.get_json()
+    user_id = get_jwt_identity()
+    data = request.get_json()
 
-        # Validate inputs
-        required_fields = ["Nitrogen", "Phosphorus", "Potassium", "pH", "Rainfall", "Temperature"]
-        for field in required_fields:
-            if field not in data or not isinstance(data[field], (int, float)):
-                return jsonify({'error': f'Invalid or missing value for {field}'}), 400
+    required_fields = ["Nitrogen", "Phosphorus", "Potassium", "pH", "Rainfall", "Temperature"]
+    for field in required_fields:
+        if field not in data:
+            return jsonify({'error': f'Missing field: {field}'}), 400
 
-        # Extract inputs
-        Nitrogen = data['Nitrogen']
-        Phosphorus = data['Phosphorus']
-        Potassium = data['Potassium']
-        pH = data['pH']
-        Rainfall = data['Rainfall']
-        Temperature = data['Temperature']
+    if not rf_model or not scaler:
+        return jsonify({'error': 'Model not loaded correctly.'}), 500
 
-        if not rf_model or not scaler:
-            return jsonify({'error': 'Model not loaded correctly.'}), 500
+    fertilizer = predict_fertilizer_rf(
+        data["Nitrogen"], data["Phosphorus"], data["Potassium"],
+        data["pH"], data["Rainfall"], data["Temperature"]
+    )
 
-        # Predict fertilizer
-        fertilizer = predict_fertilizer_rf(Nitrogen, Phosphorus, Potassium, pH, Rainfall, Temperature)
-        if not fertilizer:
-            return jsonify({'error': 'Prediction failed'}), 500
+    if not fertilizer:
+        return jsonify({'error': 'Prediction failed.'}), 500
 
-        # Save prediction in MongoDB using FertilizerModel
-        prediction_data = {
-            "Nitrogen": Nitrogen,
-            "Phosphorus": Phosphorus,
-            "Potassium": Potassium,
-            "pH": pH,
-            "Rainfall": Rainfall,
-            "Temperature": Temperature,
-            "recommended_fertilizer": fertilizer
-        }
-        result_id = FertilizerModel.save_prediction(prediction_data)
+    prediction_data = {
+        "user_id": user_id,
+        **data,
+        "recommended_fertilizer": fertilizer
+    }
 
-        return jsonify({'recommended_fertilizer': fertilizer, 'id': str(result_id.inserted_id)}), 200
+    FertilizerModel.save_prediction(prediction_data, user_id)
 
-    except ServerSelectionTimeoutError:
-        return jsonify({'error': 'Cannot connect to MongoDB. Check your connection.'}), 500
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+    return jsonify({'recommended_fertilizer': fertilizer}), 200
