@@ -33,6 +33,16 @@ def predict():
         img_array = np.array(img) / 255.0
         img_array = np.expand_dims(img_array, axis=0)
 
+        if model is None:
+            return jsonify({'error': 'Model is not loaded. Please check the server logs.'}), 500
 
+        predictions = model.predict(img_array)
+        confidence = np.max(predictions)
+        predicted_class = CLASS_LABELS[np.argmax(predictions)]
+
+        return jsonify({
+            'predicted_class': predicted_class,
+            'confidence': f"{confidence * 100:.2f}%"
+        })
     except Exception as e:
         return jsonify({'error': f'Prediction failed: {str(e)}'}), 500
