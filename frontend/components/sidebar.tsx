@@ -5,7 +5,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useTheme } from "next-themes"
 import {
-  Plane as Plant,
+  Leaf as Plant,
   LineChart,
   FlaskRound as Flask,
   Droplets,
@@ -16,6 +16,7 @@ import {
   PanelLeftClose,
   PanelLeft,
   User,
+  FireExtinguisher,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -25,7 +26,8 @@ const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: LineChart },
   { name: "Yield Prediction", href: "/yield-prediction", icon: Plant },
   { name: "Disease Detection", href: "/disease-detection", icon: Flask },
-  { name: "Fertilizer", href: "/fertilizer-prediction", icon: Droplets },
+  { name: "Fertilizer", href: "/fertilizer-prediction", icon: FireExtinguisher },
+  { name: "Irrigation", href: "/irrigation-optimization", icon: Droplets },
 ]
 
 const bottomNavigation = [
