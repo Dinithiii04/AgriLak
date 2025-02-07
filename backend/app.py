@@ -22,13 +22,12 @@ def create_app():
     bcrypt = Bcrypt(app)
 
     # Import and register Blueprints
-    from utils.auth import auth_bp
-    from routes.fertilizer import fertilizer_bp
-    from routes.user import user_bp
+
 
     app.register_blueprint(auth_bp, url_prefix='/auth')
     app.register_blueprint(fertilizer_bp, url_prefix='/fertilizer')
     app.register_blueprint(user_bp, url_prefix='/user')
+    app.register_blueprint(rice_disease_bp, url_prefix='/disease')
 
 
     return app
