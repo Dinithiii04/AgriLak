@@ -4,12 +4,14 @@ from flask_jwt_extended import JWTManager
 from database import init_db
 from dotenv import load_dotenv
 import os
+from flask_cors import CORS
 
 # Load environment variables
 load_dotenv()
 
 def create_app():
     app = Flask(__name__)
+    CORS(app)
 
     # Set JWT Secret Key
     app.config['JWT_SECRET_KEY'] = os.environ.get('JWT_SECRET_KEY', 'your_secret_key')
