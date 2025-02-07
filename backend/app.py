@@ -6,6 +6,11 @@ from dotenv import load_dotenv
 import os
 from flask_cors import CORS
 
+from routes.disease_recognition import rice_disease_bp
+from routes.fertilizer import fertilizer_bp
+from routes.user import user_bp
+from utils.auth import auth_bp
+
 # Load environment variables
 load_dotenv()
 
