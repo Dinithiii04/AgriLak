@@ -8,6 +8,7 @@ import React, {
   ReactNode,
 } from 'react';
 import axiosInstance from '../lib/axios';
+import { useRouter } from 'next/navigation';
 
 interface AuthContextType {
   token: string | null;
@@ -19,7 +20,8 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [token, setToken] = useState<string | null>(null);
-
+  const router = useRouter();
+  
   // Load token from localStorage on mount.
   useEffect(() => {
     const storedToken = localStorage.getItem('token');
@@ -48,10 +50,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  // Logout function clears token
   const logout = () => {
     setToken(null);
-    // Optionally add redirect logic or other side effects.
+    localStorage.removeItem("token");
+    router.push("/login");
   };
+ 
 
   return (
     <AuthContext.Provider value={{ token, login, logout }}>

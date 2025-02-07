@@ -17,10 +17,12 @@ import {
   PanelLeft,
   User,
   FireExtinguisher,
+  LogOut,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Switch } from "@/components/ui/switch"
+import { useAuth } from "@/context/AuthContext"
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: LineChart },
@@ -40,7 +42,7 @@ export function Sidebar() {
   const pathname = usePathname()
   const { theme, setTheme } = useTheme()
   const [isCollapsed, setIsCollapsed] = useState(false)
-
+  const { logout } = useAuth()
   return (
     <>
       <div
@@ -108,6 +110,8 @@ export function Sidebar() {
                 >
                   <PanelLeftClose className="h-4 w-4" />
                 </Button>
+                
+                
               </>
             )}
             {isCollapsed && (
@@ -120,6 +124,15 @@ export function Sidebar() {
                 <PanelLeft className="h-4 w-4" />
               </Button>
             )}
+            <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8"
+                onClick={logout}
+              >
+                <LogOut className="h-4 w-4" />
+              </Button>
+            
           </div>
         </div>
       </div>

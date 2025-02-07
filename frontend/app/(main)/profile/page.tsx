@@ -17,7 +17,15 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import axiosInstance from "@/lib/axios"
 import { Edit, Mail, User as UserIcon } from "lucide-react"
+import { useEffect, useState } from "react"
+
+interface UserProfile {
+  username: string;
+  email: string;
+  created_at: string;
+}
 
 const predictionHistory = [
   {
@@ -49,6 +57,26 @@ const predictionHistory = [
 ]
 
 export default function ProfilePage() {
+  const [user, setUser] = useState<UserProfile | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const response = await axiosInstance.get("/user/profile");
+        setUser(response.data.profile);
+      } catch (err: any) {
+        console.error("Error fetching profile:", err);
+        setError("Failed to load profile. Please try again.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchUserProfile();
+  }, []);
+
   return (
     <div className="container max-w-[1000px] py-8 space-y-8">
       <Card>
@@ -57,18 +85,26 @@ export default function ProfilePage() {
             <div className="flex items-center gap-4">
               <Avatar className="h-20 w-20">
                 <AvatarImage src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?w=400&h=400&q=80" />
-                <AvatarFallback>JD</AvatarFallback>
+                <AvatarFallback>{user?.username?.charAt(0).toUpperCase()}</AvatarFallback>
               </Avatar>
               <div>
-                <CardTitle className="text-2xl">John Doe</CardTitle>
-                <CardDescription className="flex items-center gap-2 mt-2">
-                  <Mail className="h-4 w-4" />
-                  john.doe@example.com
-                </CardDescription>
-                <div className="flex items-center gap-2 text-muted-foreground mt-1">
-                  <UserIcon className="h-4 w-4" />
-                  Farmer
-                </div>
+                {isLoading ? (
+                  <CardTitle className="text-2xl">Loading...</CardTitle>
+                ) : error ? (
+                  <CardTitle className="text-2xl text-red-500">{error}</CardTitle>
+                ) : (
+                  <>
+                    <CardTitle className="text-2xl capitalize">{user?.username}</CardTitle>
+                    <CardDescription className="flex items-center gap-2 mt-2">
+                      <Mail className="h-4 w-4" />
+                      {user?.email}
+                    </CardDescription>
+                    <div className="flex items-center gap-2 text-muted-foreground mt-1">
+                      <UserIcon className="h-4 w-4" />
+                      Farmer
+                    </div>
+                  </>
+                )}
               </div>
             </div>
             <Button variant="outline" size="sm" className="flex items-center gap-2">
