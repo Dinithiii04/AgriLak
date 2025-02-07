@@ -4,6 +4,8 @@ import { Plane as Plant, AlertTriangle, Droplets, LineChart } from "lucide-react
 import { Card } from "@/components/ui/card"
 import { DashboardCard } from "@/components/dashboard-card"
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
+import { useEffect, useState } from "react"
+import GifLoader from "@/components/loader"
 
 const data = [
   { month: "Jan", prediction: 4.2 },
@@ -33,6 +35,20 @@ const alerts = [
 ]
 
 export default function DashboardPage() {
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    // Simulate loading time
+    const timer = setTimeout(() => {
+      setIsLoading(false)
+    }, 5000)
+
+    return () => clearTimeout(timer)
+  }, [])
+
+  if (isLoading) {
+    return <GifLoader />
+  }
   return (
     <div className="container max-w-[1000px] py-8 space-y-8">
       <div>

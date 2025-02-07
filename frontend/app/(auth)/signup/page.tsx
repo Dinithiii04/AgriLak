@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import axiosInstance from "@/lib/axios"
 
 const passwordSchema = z
   .string()
@@ -25,18 +26,21 @@ const passwordSchema = z
   .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
   .regex(/[0-9]/, "Password must contain at least one number")
 
-const formSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters"),
-  email: z.string().email("Invalid email address"),
-  password: passwordSchema,
-  confirmPassword: z.string(),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords don't match",
-  path: ["confirmPassword"],
-})
+const formSchema = z
+  .object({
+    name: z.string().min(2, "Name must be at least 2 characters"),
+    email: z.string().email("Invalid email address"),
+    password: passwordSchema,
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ["confirmPassword"],
+  })
 
 export default function SignupPage() {
   const [isLoading, setIsLoading] = useState(false)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const router = useRouter()
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -51,10 +55,29 @@ export default function SignupPage() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true)
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    setIsLoading(false)
-    router.push("/dashboard")
+    setErrorMessage(null)
+
+    try {
+      // Register the user
+      const response = await axiosInstance.post("/auth/register", {
+        username: values.name,
+        email: values.email,
+        password: values.password,
+      })
+
+      const accessToken = response.data.token
+
+      // Save the token in localStorage
+      localStorage.setItem("token", accessToken)
+
+      // Redirect to the dashboard
+      router.push("/dashboard")
+    } catch (error: any) {
+      console.error("Signup error:", error)
+      setErrorMessage(error.response?.data?.error || "An error occurred during signup.")
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -67,6 +90,7 @@ export default function SignupPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
+          {errorMessage && <div className="mb-4 text-center text-red-500">{errorMessage}</div>}
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <FormField
@@ -161,11 +185,7 @@ export default function SignupPage() {
                   </FormItem>
                 )}
               />
-              <Button
-                type="submit"
-                className="w-full"
-                disabled={isLoading}
-              >
+              <Button type="submit" className="w-full" disabled={isLoading}>
                 {isLoading ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />

@@ -25,7 +25,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <div className="flex">
-            <main className="flex-1 ml-64">{children}</main>
+            <main className="flex-1 flex justify-center">{children}</main>
           </div>
         </ThemeProvider>
       </body>
