@@ -3,9 +3,9 @@ from database import mongo
 class FertilizerModel:
     @staticmethod
     def save_prediction(data, user_id):
-        """
-        Save fertilizer-related data to MongoDB, linked to the user.
-        """
+
+        # Save fertilizer-related data to MongoDB, linked to the user.
+
         prediction_data = {
             "user_id": user_id,  # Link the prediction to the user
             "Nitrogen": data.get("Nitrogen"),
@@ -21,9 +21,9 @@ class FertilizerModel:
 
     @staticmethod
     def get_user_predictions(user_id):
-        """
-        Retrieve all predictions made by a specific user.
-        """
+
+        # Retrieve all predictions made by a specific user.
+
         return list(mongo.db.predictions.find(
             {"user_id": user_id},  # Filter by user ID
             {'_id': 0}              # Exclude MongoDB's internal _id field
