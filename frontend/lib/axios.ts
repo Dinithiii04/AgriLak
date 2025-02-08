@@ -9,8 +9,7 @@ const axiosInstance = axios.create({
 
 // Automatically attach the bearer token to every request.
 axiosInstance.interceptors.request.use(
-  (config:any) => {
-    // Ensure we're running in the browser.
+  (config) => {
     if (typeof window !== 'undefined') {
       const token = localStorage.getItem('token');
       if (token) {
@@ -21,6 +20,19 @@ axiosInstance.interceptors.request.use(
     return config;
   },
   (error) => Promise.reject(error)
+);
+
+// Handle 401 Unauthorized errors globally
+axiosInstance.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      // Clear stored token and redirect to login (optional)
+      localStorage.removeItem('token');
+      window.location.href = '/login'; // Adjust this to your login route
+    }
+    return Promise.reject(error);
+  }
 );
 
 export default axiosInstance;
