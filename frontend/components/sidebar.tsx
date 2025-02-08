@@ -1,28 +1,24 @@
 "use client"
 
-import { useState } from "react"
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { useTheme } from "next-themes"
-import {
-  Leaf as Plant,
-  LineChart,
-  FlaskRound as Flask,
-  Droplets,
-  Settings,
-  HelpCircle,
-  Moon,
-  Sun,
-  PanelLeftClose,
-  PanelLeft,
-  User,
-  FireExtinguisher,
-  LogOut,
-} from "lucide-react"
-import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Switch } from "@/components/ui/switch"
 import { useAuth } from "@/context/AuthContext"
+import { cn } from "@/lib/utils"
+import {
+  Droplets,
+  FireExtinguisher,
+  FlaskRound as Flask,
+  LineChart,
+  Moon,
+  PanelLeft,
+  PanelLeftClose,
+  Leaf as Plant,
+  User
+} from "lucide-react"
+import { useTheme } from "next-themes"
+import Link from "next/link"
+import { usePathname } from "next/navigation"
+import { useState } from "react"
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: LineChart },
@@ -34,8 +30,6 @@ const navigation = [
 
 const bottomNavigation = [
   { name: "Profile", href: "/profile", icon: User },
-  { name: "Settings", href: "/settings", icon: Settings },
-  { name: "Help", href: "/help", icon: HelpCircle },
 ]
 
 export function Sidebar() {
@@ -124,15 +118,6 @@ export function Sidebar() {
                 <PanelLeft className="h-4 w-4" />
               </Button>
             )}
-            <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8"
-                onClick={logout}
-              >
-                <LogOut className="h-4 w-4" />
-              </Button>
-            
           </div>
         </div>
       </div>
