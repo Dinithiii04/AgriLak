@@ -21,11 +21,16 @@ def predict_fertilizer_rf(N, P, K, pH, Rainfall, Temperature):
     try:
         user_input = np.array([[N, P, K, pH, Rainfall, Temperature]])
         scaled_input = scaler.transform(user_input)
-        predicted_class = rf_model.predict(scaled_input)[0]
-        return fertilizer_mapping[predicted_class]
+
+        # Get predicted class and probabilities
+        probabilities = rf_model.predict_proba(scaled_input)[0]  # Get probability distribution
+        predicted_class = np.argmax(probabilities)  # Get the class with the highest probability
+        confidence = round(probabilities[predicted_class] * 100, 2)  # Convert to percentage
+
+        return fertilizer_mapping[predicted_class], confidence
     except Exception as e:
         print(f"Prediction error: {e}")
-        return None
+        return None, None
 
 
 @fertilizer_bp.route('/predict', methods=['POST'])
@@ -42,7 +47,7 @@ def predict_fertilizer():
     if not rf_model or not scaler:
         return jsonify({'error': 'Model not loaded correctly.'}), 500
 
-    fertilizer = predict_fertilizer_rf(
+    fertilizer, confidence = predict_fertilizer_rf(
         data["Nitrogen"], data["Phosphorus"], data["Potassium"],
         data["pH"], data["Rainfall"], data["Temperature"]
     )
@@ -53,9 +58,13 @@ def predict_fertilizer():
     prediction_data = {
         "user_id": user_id,
         **data,
-        "recommended_fertilizer": fertilizer
+        "recommended_fertilizer": fertilizer,
+        "confidence": confidence
     }
 
     FertilizerModel.save_prediction(prediction_data, user_id)
 
-    return jsonify({'recommended_fertilizer': fertilizer}), 200
+    return jsonify({
+        'recommended_fertilizer': fertilizer,
+        'confidence': f"{confidence}%"
+    }), 200
