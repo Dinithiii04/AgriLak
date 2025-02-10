@@ -48,9 +48,6 @@ datasets/processed/*
 !datasets/processed/.keep  # Allow empty processed directory if needed
 
 # Models
-*.joblib
-*.pkl
-*.h5
 *.ckpt
 
 # Docker
