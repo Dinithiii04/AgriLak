@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import axios from "axios";
+import axiosInstance from "@/lib/axios";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import {
@@ -24,7 +24,6 @@ import {
 } from "@/components/ui/card";
 import { ArrowLeft, Droplets, Thermometer, FlaskRound as Flask } from "lucide-react";
 import { ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, Radar } from "recharts";
-import axiosInstance from "@/lib/axios";
 
 // Zod schema for form validation
 const formSchema = z.object({
@@ -41,7 +40,7 @@ type FormValues = z.infer<typeof formSchema>;
 interface PredictionResult {
   inputs: FormValues;
   recommendation: string;
-  confidence: number;
+  confidence: string;
   details: string;
 }
 
@@ -68,7 +67,6 @@ export default function FertilizerPredictionPage() {
     setResult(null);
 
     try {
-      // Convert form values to the expected JSON format for the API request
       const requestData = {
         Nitrogen: parseFloat(values.nitrogen),
         Phosphorus: parseFloat(values.phosphorus),
@@ -78,17 +76,17 @@ export default function FertilizerPredictionPage() {
         Temperature: parseFloat(values.temperature),
       };
 
-      // Use axiosInstance (which has the base URL and token set)
-    const response = await axiosInstance.post("/fertilizer/predict", requestData);
+      // Fetch data from API
+      const response = await axiosInstance.post("/fertilizer/predict", requestData);
 
-      // Extract recommended fertilizer from API response
+      // Extract values from API response
       const recommendedFertilizer = response.data.recommended_fertilizer;
+      const confidenceScore = response.data.confidence; // Fetch confidence dynamically
 
-      // Update state with the API response
       setResult({
         inputs: values,
         recommendation: recommendedFertilizer,
-        confidence: 95, // Simulating confidence (update as needed)
+        confidence: confidenceScore, //Use actual confidence score
         details: `Based on your soil composition and environmental conditions, we recommend using ${recommendedFertilizer} fertilizer for optimal plant growth.`,
       });
     } catch (err: any) {
@@ -136,7 +134,7 @@ export default function FertilizerPredictionPage() {
                   {result.recommendation}
                 </h3>
                 <div className="text-sm text-muted-foreground">
-                  {result.confidence}% confidence
+                  Confidence: {result.confidence}
                 </div>
               </div>
               <p className="text-muted-foreground">{result.details}</p>
