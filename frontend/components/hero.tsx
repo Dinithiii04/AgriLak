@@ -26,7 +26,7 @@ export function Hero() {
           <div className="lg:w-1/2 mt-12 lg:mt-0 relative px-4">
             <div className="relative">
               <Image
-                src="https://gadden-react.vercel.app/assets/images/hero/hero-three_one.jpg"
+                src="images/f1.jpg"
                 alt="Smart Paddy Farming"
                 width={600}
                 height={600}

@@ -3,23 +3,23 @@ import Image from 'next/image';
 export function ExpertTeam() {
   const team = [
     {
-      image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330",
-      name: "Dilshan Kavishka Indigahawela",
+      image: "images/4.png",
+      name: "TRV Fernando",
       role: "Paddy Yield Prediction",
     },
     {
-      image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e",
-      name: "Binara Mendis",
+      image: "images/3.png",
+      name: "Dilshan Indigahawela",
       role: "Paddy Disease Detection",
     },
     {
-      image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80",
-      name: "TRV Fernando",
+      image: "images/6.png",
+      name: "CADM Anthony",
       role: "Fertilizer Recommendation System",
     },
     {
-      image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e",
-      name: "CADM Anthony",
+      image: "images/1.png",
+      name: "Binara Mendis",
       role: "Irrigation Management",
     },
   ];
