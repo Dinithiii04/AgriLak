@@ -8,8 +8,8 @@ fertilizer_bp = Blueprint('fertilizer', __name__)
 
 # Load Model and Scaler
 try:
-    rf_model = joblib.load('models/fertilizer/rf_model.joblib')
-    scaler = joblib.load('models/fertilizer/scaler.pkl')
+    rf_model = joblib.load('models/fertilizer/fertilizer_model.joblib')
+    scaler = joblib.load('models/fertilizer/Scaler.pkl')
 except Exception as e:
     print(f"Error loading model/scaler: {e}")
     rf_model, scaler = None, None
