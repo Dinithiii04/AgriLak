@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify, render_template
+from flask import Blueprint, request, jsonify
 import os
 import numpy as np
 import tensorflow as tf
@@ -16,8 +16,9 @@ else:
     model = tf.keras.models.load_model(MODEL_PATH)
     print("Model loaded successfully!")
 
-# Class labels
+# Ensure class labels match training order
 CLASS_LABELS = ['bacterial_leaf_blight', 'healthy', 'leaf_blast', 'leaf_scald']
+
 
 @rice_disease_bp.route('/predict', methods=['POST'])
 def predict():
@@ -30,7 +31,8 @@ def predict():
     try:
         img = Image.open(file.stream).convert("RGB")
         img = img.resize((150, 150))
-        img_array = np.array(img) / 255.0
+        img_array = np.array(img)
+        img_array = tf.keras.applications.mobilenet_v2.preprocess_input(img_array)  # Ensure same preprocessing
         img_array = np.expand_dims(img_array, axis=0)
 
         if model is None:
@@ -38,7 +40,19 @@ def predict():
 
         predictions = model.predict(img_array)
         confidence = np.max(predictions)
-        predicted_class = CLASS_LABELS[np.argmax(predictions)]
+        predicted_index = np.argmax(predictions)
+        predicted_class = CLASS_LABELS[predicted_index]
+
+        # Introduce a rejection mechanism for non-leaf images
+        if confidence < 0.75:
+            return jsonify(
+                {'predicted_class': 'Cannot recognize this disease', 'confidence': f"{confidence * 100:.2f}%"})
+
+        # Additional safeguard: If all probabilities are similar, it's likely a non-leaf
+        sorted_probs = np.sort(predictions[0])
+        if sorted_probs[-1] - sorted_probs[-2] < 0.15:  # If the top-2 probabilities are too close
+            return jsonify(
+                {'predicted_class': 'Uncertain - Possibly not a rice leaf', 'confidence': f"{confidence * 100:.2f}%"})
 
         return jsonify({
             'predicted_class': predicted_class,
