@@ -38,7 +38,9 @@ export function Services() {
           {servicesList.map((service, index) => (
             <div
               key={index}
-              className="relative bg-gray-50 p-6 rounded-xl shadow-sm  transition-allext-center"
+              className="relative p-6 rounded-xl shadow-sm transition-all text-center" 
+              style={{ backgroundColor: '#CADBB7' }}
+
             >
               {/* Floating Icon */}
               <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 w-16 h-16 flex items-center justify-center bg-white rounded-full shadow-md">

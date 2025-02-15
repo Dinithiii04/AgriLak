@@ -3,7 +3,7 @@ import Image from 'next/image';
 export function ExpertTeam() {
   const team = [
     {
-      image: "images/4.png",
+      image: "images/6.png",
       name: "TRV Fernando",
       role: "Paddy Yield Prediction",
     },
@@ -13,8 +13,8 @@ export function ExpertTeam() {
       role: "Paddy Disease Detection",
     },
     {
-      image: "images/6.png",
-      name: "CADM Anthony",
+      image: "images/4.png",
+      name: "Dinithi Anthony",
       role: "Fertilizer Recommendation System",
     },
     {
