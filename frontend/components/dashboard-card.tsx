@@ -9,7 +9,7 @@ interface DashboardCardProps {
     value: number
     trend: "up" | "down"
   }
-  icon: LucideIcon
+  icon: typeof LucideIcon
 }
 
 export function DashboardCard({ title, value, change, icon: Icon }: DashboardCardProps) {
