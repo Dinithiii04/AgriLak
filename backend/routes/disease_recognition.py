@@ -1,48 +1,65 @@
-from flask import Blueprint, request, jsonify, render_template
 import os
-import numpy as np
+from flask import Blueprint, request, jsonify
 import tensorflow as tf
+import numpy as np
 from PIL import Image
+import io
 
 # Initialize Blueprint
 rice_disease_bp = Blueprint('rice_disease', __name__)
 
-# Load Model
-MODEL_PATH = "models/pest_disease/rice_disease_model.h5"
-if not os.path.exists(MODEL_PATH):
-    model = None
-    print("Model file not found. Ensure 'rice_disease_model.h5' is in the models folder.")
-else:
-    model = tf.keras.models.load_model(MODEL_PATH)
-    print("Model loaded successfully!")
+# Load Model with absolute path
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+MODEL_PATH = os.path.join(BASE_DIR, '..', 'models', 'pest_disease', 'rice_disease_model.h5')
 
-# Class labels
-CLASS_LABELS = ['bacterial_leaf_blight', 'healthy', 'leaf_blast', 'leaf_scald']
+try:
+    model = tf.keras.models.load_model(MODEL_PATH)
+except Exception as e:
+    raise RuntimeError(f"Failed to load model: {e}")
+
+# Define classes based on your dataset
+class_labels = ['bacterial_leaf_blight', 'healthy', 'leaf_blast', 'leaf_scald']
+
+
+def classify_image(img, model, class_labels, threshold=0.75):
+    # Resize and normalize the image
+    img = img.resize((150, 150))
+    img_array = np.array(img) / 255.0  # Normalize
+    img_array = np.expand_dims(img_array, axis=0)  # Add batch dimension
+
+    # Get predictions
+    predictions = model.predict(img_array)
+    confidence = np.max(predictions)
+    predicted_class = class_labels[np.argmax(predictions)]
+
+    # Threshold check
+    if confidence < threshold:
+        return f"Cannot recognize or not a trained disease. Confidence: {confidence * 100:.2f}%"
+
+    return f"Predicted class: {predicted_class} ({confidence * 100:.2f}%)"
+
 
 @rice_disease_bp.route('/predict', methods=['POST'])
 def predict():
-    print("Received POST request at /rice_disease/predict")  # Debug log
-    file = request.files.get('file')
+    if 'file' not in request.files:
+        return jsonify({'error': 'No file part'}), 400
 
-    if file is None or file.filename == '':
-        return jsonify({'error': 'No file provided'}), 400
+    file = request.files['file']
+    if file.filename == '':
+        return jsonify({'error': 'No selected file'}), 400
 
     try:
-        img = Image.open(file.stream).convert("RGB")
-        img = img.resize((150, 150))
-        img_array = np.array(img) / 255.0
-        img_array = np.expand_dims(img_array, axis=0)
+        # Read image file as bytes
+        image_bytes = file.read()
+        image = Image.open(io.BytesIO(image_bytes))
 
-        if model is None:
-            return jsonify({'error': 'Model is not loaded. Please check the server logs.'}), 500
+        # Call classify_image function for prediction
+        result = classify_image(image, model, class_labels)
 
-        predictions = model.predict(img_array)
-        confidence = np.max(predictions)
-        predicted_class = CLASS_LABELS[np.argmax(predictions)]
-
+        # Return result in the required format
         return jsonify({
-            'predicted_class': predicted_class,
-            'confidence': f"{confidence * 100:.2f}%"
+            'result': result
         })
+
     except Exception as e:
-        return jsonify({'error': f'Prediction failed: {str(e)}'}), 500
+        return jsonify({'error': str(e)}), 500
