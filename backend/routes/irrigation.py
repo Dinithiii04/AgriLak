@@ -5,6 +5,7 @@ import pandas as pd
 
 irrigation_bp = Blueprint('irrigation', __name__)
 
+# Load PCA model
 try:
     with open('models/irrigation/pca.pkl', 'rb') as f:
         pca = pickle.load(f)
@@ -13,6 +14,7 @@ except Exception as e:
     print(f"Error loading PCA model: {e}")
     pca = None
 
+# Load Machine Learning Model
 try:
     with open('models/irrigation/irrigation_optimization_model.pkl', 'rb') as f:
         model = pickle.load(f)
@@ -21,6 +23,7 @@ except Exception as e:
     print(f"Error loading model: {e}")
     model = None
 
+# Load Scaler
 try:
     with open('models/irrigation/StandardScaler.pkl', 'rb') as f:
         scaler = pickle.load(f)
@@ -33,6 +36,7 @@ except Exception as e:
 @irrigation_bp.route('/predict', methods=['POST'])
 def pred():
     try:
+        # Get input data
         data = request.get_json()
         T2M = data['T2M']
         T2M_RANGE = data['T2M_RANGE']
@@ -50,20 +54,31 @@ def pred():
         scaled_pca_features = scaler.transform(pca_features)
         pca_transformed = pca.transform(scaled_pca_features)
 
+
         other_features = np.array([[T2M, T2M_RANGE, RH2M, GWETTOP]])
         combined_features = np.hstack((other_features, pca_transformed))
 
         feature_columns = ['T2M', 'T2M_RANGE', 'RH2M', 'GWETTOP', 'PCACOMP1', 'PCACOMP2', 'PCACOMP3']
         input_df = pd.DataFrame(combined_features, columns=feature_columns)
 
-        prediction = model.predict(input_df)[0]
-        if prediction == 0:
-            result = "Irrigate"
-        elif prediction == 1:
-            result = "Do Not Irrigate"
+
+        prediction_probs = model.predict_proba(input_df)[0]
+        confidence = np.max(prediction_probs)
+        predicted_class = np.argmax(prediction_probs)
+
+        threshold = 0.80
+        if confidence >= threshold:
+            if predicted_class == 0:
+                result="Irrigate"
+            else:
+                result="Do Not Irrigate"
         else:
-            result = "Error"
-        return jsonify({'prediction': result}), 200
+            result = "Uncertain Decision"
+
+        return jsonify({
+            'prediction': result,
+            'confidence': round(confidence * 100, 2)  # Convert to percentage
+        }), 200
 
     except Exception as e:
         return jsonify({'error': f'Error during prediction: {str(e)}'}), 500
