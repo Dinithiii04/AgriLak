@@ -7,21 +7,21 @@ import Image from 'next/image';
 
 export function Navbar() {
   return (
-    <header className="w-full bg-white border-b-2 sticky top-0 z-50">
+    <header className="w-full bg-[#001910] border-b-2 sticky top-0 z-50">
       <nav className="max-w-7xl mx-auto py-4 px-6 flex items-center justify-between">
         {/* Logo & Branding */}
         <Link href="/" className="flex items-center gap-2">
           <Image 
-            src="/logo.svg" 
+            src="/images/logo.svg" 
             alt="AgriLak" 
-            width={40} 
-            height={40}
-            className="w-10 h-10"
+            width={30} 
+            height={30}
+            className="w-20 20"
             priority
           />
           <div>
-            <span className="text-2xl font-bold text-green-800 block">AgriLak</span>
-            <span className="text-sm text-gray-600">Smart Paddy Management</span>
+            <span className="text-2xl font-bold text-[#558B2F] block">AgriLak</span>
+            <span className="text-sm text-[#EAEBE7]">Smart Paddy Management</span>
           </div>
         </Link>
 
