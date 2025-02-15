@@ -21,7 +21,7 @@ export function Navbar() {
           />
           <div>
             <span className="text-2xl font-bold text-[#558B2F] block">AgriLak</span>
-            <span className="text-sm text-[#EAEBE7]">Smart Paddy Management</span>
+            <span className="text-sm text-[#b0b1af]">Smart Paddy Management</span>
           </div>
         </Link>
 

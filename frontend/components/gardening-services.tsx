@@ -16,7 +16,7 @@ export function AboutSection() {
         <div className="lg:w-1/2 relative">
           <div className="relative w-full h-[643px]">
             <Image
-              src="https://gadden-react.vercel.app/assets/images/about/about-6.png"
+              src="/images/hero.png"
               alt="Smart Paddy Farming"
               layout="fill"
               className="object-cover rounded-lg"
