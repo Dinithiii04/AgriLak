@@ -16,7 +16,7 @@ try:
     model = tf.keras.models.load_model(MODEL_PATH)
     print("✅ Model loaded successfully!")
 except Exception as e:
-    raise RuntimeError(f" Failed to load model: {e}")
+    raise RuntimeError(f"❌ Failed to load model: {e}")
 
 # Define classes based on dataset
 class_labels = ["bacterial_leaf_blight", "healthy", "leaf_blast", "leaf_scald"]
@@ -42,10 +42,12 @@ def predict():
         return jsonify({"error": "No selected file"}), 400
 
     try:
+        # Read and preprocess image
         image_bytes = file.read()
         image = Image.open(io.BytesIO(image_bytes))
         img_array = preprocess_image(image)
 
+        # Predict with model
         predictions = model.predict(img_array)
         confidence = np.max(predictions)
         predicted_class = class_labels[np.argmax(predictions)]
@@ -54,7 +56,11 @@ def predict():
         if confidence < 0.50:
             return jsonify({"error": "Model is unsure. Low confidence."}), 400
 
-        return jsonify({"predicted_class": predicted_class, "confidence": f"{confidence:.4f}"}), 200
+        # Return prediction result
+        return jsonify({
+            "disease": predicted_class,  # ✅ Updated key to match frontend
+            "confidence": f"{confidence:.4f}"
+        }), 200
 
     except Exception as e:
         return jsonify({"error": f"Prediction error: {str(e)}"}), 500
