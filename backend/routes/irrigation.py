@@ -5,7 +5,7 @@ import pandas as pd
 
 irrigation_bp = Blueprint('irrigation', __name__)
 
-# Load PCA model
+
 try:
     with open('models/irrigation/pca.pkl', 'rb') as f:
         pca = pickle.load(f)
@@ -14,7 +14,7 @@ except Exception as e:
     print(f"Error loading PCA model: {e}")
     pca = None
 
-# Load Machine Learning Model
+
 try:
     with open('models/irrigation/irrigation_optimization_model.pkl', 'rb') as f:
         model = pickle.load(f)
@@ -23,7 +23,7 @@ except Exception as e:
     print(f"Error loading model: {e}")
     model = None
 
-# Load Scaler
+
 try:
     with open('models/irrigation/StandardScaler.pkl', 'rb') as f:
         scaler = pickle.load(f)
@@ -36,7 +36,6 @@ except Exception as e:
 @irrigation_bp.route('/predict', methods=['POST'])
 def pred():
     try:
-        # Get input data
         data = request.get_json()
         T2M = data['T2M']
         T2M_RANGE = data['T2M_RANGE']
@@ -77,7 +76,7 @@ def pred():
 
         return jsonify({
             'prediction': result,
-            'confidence': round(confidence * 100, 2)  # Convert to percentage
+            'confidence': round(confidence * 100, 2)
         }), 200
 
     except Exception as e:
