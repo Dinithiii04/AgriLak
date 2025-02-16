@@ -65,7 +65,7 @@ def pred():
         confidence = np.max(prediction_probs)
         predicted_class = np.argmax(prediction_probs)
 
-        threshold = 0.80
+        threshold = 0.70
         if confidence >= threshold:
             if predicted_class == 0:
                 result="Irrigate"

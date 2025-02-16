@@ -80,7 +80,7 @@ export default function IrrigationOptimizationPage() {
       };
 
       const response = await axiosInstance.post("/irrigation/predict", requestData);
-      const irrigationPlan = response.data.irrigation_plan;
+      const irrigationPlan = response.data.prediction;
       const confidenceScore = response.data.confidence;
       setResult({
         inputs: values,
