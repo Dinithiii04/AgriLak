@@ -37,13 +37,13 @@ except Exception as e:
 def pred():
     try:
         data = request.get_json()
-        T2M = data['T2M']
-        T2M_RANGE = data['T2M_RANGE']
-        T2MDEW = data['T2MDEW']
-        RH2M = data['RH2M']
-        GWETTOP = data['GWETTOP']
-        Rainfall = data['Rainfall']
-        Month = data['Month']
+        T2M = float(data.get('T2M', 0))
+        T2M_RANGE = float(data.get('T2M_RANGE', 0))
+        T2MDEW = float(data.get('T2MDEW', 0))
+        RH2M = float(data.get('RH2M', 0))
+        GWETTOP = float(data.get('soil_moisture', 0))
+        Rainfall = float(data.get('Rainfall', 0))
+        Month = int(data.get('Month', 1))
 
         print('Received Input:', T2M, T2M_RANGE, T2MDEW, RH2M, GWETTOP, Rainfall, Month)
 
