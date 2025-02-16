@@ -23,9 +23,12 @@ def predict_fertilizer_rf(N, P, K, pH, Rainfall, Temperature):
         scaled_input = scaler.transform(user_input)
 
         # Get predicted class and probabilities
-        probabilities = rf_model.predict_proba(scaled_input)[0]  # Get probability distribution
-        predicted_class = np.argmax(probabilities)  # Get the class with the highest probability
-        confidence = round(probabilities[predicted_class] * 100, 2)  # Convert to percentage
+        probabilities = rf_model.predict_proba(scaled_input)[0]
+        predicted_class = np.argmax(probabilities)
+        confidence = round(probabilities[predicted_class] * 100, 2)
+
+        if confidence < 65:
+            return "No recommendation due to low confidence.", confidence
 
         return fertilizer_mapping[predicted_class], confidence
     except Exception as e:
@@ -40,19 +43,23 @@ def predict_fertilizer():
     data = request.get_json()
 
     required_fields = ["Nitrogen", "Phosphorus", "Potassium", "pH", "Rainfall", "Temperature"]
-    for field in required_fields:
-        if field not in data:
-            return jsonify({'error': f'Missing field: {field}'}), 400
+    missing_fields = [field for field in required_fields if field not in data]
+    if missing_fields:
+        return jsonify({'error': f'Missing fields: {', '.join(missing_fields)}'}), 400
 
     if not rf_model or not scaler:
         return jsonify({'error': 'Model not loaded correctly.'}), 500
 
     fertilizer, confidence = predict_fertilizer_rf(
-        data["Nitrogen"], data["Phosphorus"], data["Potassium"],
-        data["pH"], data["Rainfall"], data["Temperature"]
+        data["Nitrogen"],
+        data["Phosphorus"],
+        data["Potassium"],
+        data["pH"],
+        data["Rainfall"],
+        data["Temperature"]
     )
 
-    if not fertilizer:
+    if fertilizer is None:
         return jsonify({'error': 'Prediction failed.'}), 500
 
     prediction_data = {

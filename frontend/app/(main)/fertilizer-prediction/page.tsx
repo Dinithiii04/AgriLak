@@ -87,7 +87,10 @@ export default function FertilizerPredictionPage() {
         inputs: values,
         recommendation: recommendedFertilizer,
         confidence: confidenceScore, //Use actual confidence score
-        details: `Based on your soil composition and environmental conditions, we recommend using ${recommendedFertilizer} fertilizer for optimal plant growth.`,
+        details:
+          recommendedFertilizer === "No recommended fertilizer due to low confidence in prediction."
+            ? "The model was unable to determine a suitable fertilizer recommendation with high confidence. Please review your inputs or seek expert advice."
+            : `Based on your soil composition and environmental conditions, we recommend using ${recommendedFertilizer} fertilizer for optimal plant growth.`,
       });
     } catch (err: any) {
       console.error("Error fetching prediction:", err);
