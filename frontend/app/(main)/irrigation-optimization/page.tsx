@@ -81,11 +81,12 @@ export default function IrrigationOptimizationPage() {
 
       const response = await axiosInstance.post("/irrigation/predict", requestData);
       const irrigationPlan = response.data.irrigation_plan;
+      const confidenceScore = response.data.confidence;
 //
       setResult({
         inputs: values,
         recommendation: irrigationPlan,
-        confidence: 90,
+        confidence: confidenceScore,
         details: `Based on the environmental conditions and soil moisture, the recommended irrigation strategy is: ${irrigationPlan}.`,
       });
     } catch (err: any) {
@@ -115,12 +116,16 @@ export default function IrrigationOptimizationPage() {
             <CardDescription>Based on your soil and climate data</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
-            <div className="text-center p-6 bg-primary/10 rounded-lg">
-              <h3 className="text-3xl font-bold text-primary mb-2">{result.recommendation}</h3>
-              <div className="text-sm text-muted-foreground">{result.confidence}% confidence</div>
-            </div>
-            <p className="text-muted-foreground">{result.details}</p>
-          </CardContent>
+              <div className="text-center p-6 bg-primary/10 rounded-lg">
+                <h3 className="text-3xl font-bold text-primary mb-2">
+                  {result.recommendation}
+                </h3>
+                <div className="text-sm text-muted-foreground">
+                  Confidence: {result.confidence}
+                </div>
+              </div>
+              <p className="text-muted-foreground">{result.details}</p>
+            </CardContent>
         </Card>
       </div>
     );
