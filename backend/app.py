@@ -11,6 +11,7 @@ from routes.fertilizer import fertilizer_bp
 from routes.user import user_bp
 from utils.auth import auth_bp
 from routes.irrigation import irrigation_bp
+from routes.yield_prediction import yield_bp
 
 # Load environment variables
 load_dotenv()
@@ -29,12 +30,12 @@ def create_app():
 
     # Import and register Blueprints
 
-
     app.register_blueprint(auth_bp, url_prefix='/auth')
     app.register_blueprint(fertilizer_bp, url_prefix='/fertilizer')
     app.register_blueprint(user_bp, url_prefix='/user')
     app.register_blueprint(rice_disease_bp, url_prefix='/disease')
     app.register_blueprint(irrigation_bp, url_prefix='/irrigation')
+    app.register_blueprint(yield_bp, url_prefix='/yield')
 
 
     return app
