@@ -13,21 +13,21 @@ export function Services() {
     {
       icon: <Sprout className="w-10 h-10 text-green-800" />,
       title: 'Yield Prediction',
-      description: 'AI-powered yield forecasting for better crop planning.',
+      description: 'AI-powered yield forecasting for better crop planning and decision-making.',
       image: 'images/paddy-img2.jpg',
       longDescription: 'Our AI model analyzes historical weather and soil conditions to provide accurate yield forecasts, helping farmers plan ahead and optimize production. This enables better resource allocation, minimizes waste, and ensures sustainability in agricultural practices. Farmers can use predictive insights to determine the best planting schedules and expected output, helping them secure better market opportunities and reduce financial risks.',
     },
     {
       icon: <Droplet className="w-10 h-10 text-green-800" />,
       title: 'Irrigation Management',
-      description: 'Optimize water usage with real-time irrigation insights.',
+      description: 'Optimize water usage with real-time insights to prevent under or over-irrigation.',
       image: 'images/paddy-img4.jpg',
       longDescription: 'Using real-time weather and soil moisture data, our system helps farmers make data-driven decisions to minimize water wastage and improve irrigation efficiency. The AI-powered system ensures crops receive adequate hydration while conserving resources, ultimately leading to higher yields and sustainable farming. Farmers can also integrate weather forecasts to anticipate water needs and prevent over-irrigation, reducing soil erosion and preserving water quality.',
     },
     {
       icon: <ShieldCheck className="w-10 h-10 text-green-800" />,
       title: 'Disease Detection',
-      description: 'Early disease identification through AI-driven analysis.',
+      description: 'Early disease identification through AI-driven image analysis for better control.',
       image: 'images/paddy-img6.jpg',
       longDescription: 'Our AI-based disease detection system identifies early signs of plant diseases using image recognition and provides actionable insights to prevent crop loss. By leveraging deep learning techniques, the system can classify diseases with high accuracy, allowing farmers to take preventive measures in time. This helps reduce dependency on harmful pesticides, lowers costs, and promotes healthier crop yields while maintaining environmental balance.',
     },
@@ -54,7 +54,7 @@ export function Services() {
           {servicesList.map((service, index) => (
             <div
               key={index}
-              className="relative p-6 rounded-xl shadow-sm transition-all text-center"
+              className="relative p-6 pb-16 rounded-xl shadow-sm transition-all text-center flex flex-col items-center"
               style={{ backgroundColor: '#CADBB7' }}
             >
               <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 w-16 h-16 flex items-center justify-center bg-white rounded-full shadow-md">
@@ -66,6 +66,7 @@ export function Services() {
                 <p className="text-gray-600">{service.description}</p>
               </div>
 
+              {/* Button positioned at bottom-left without overlapping text */}
               <button
                 className="absolute bottom-4 left-4 w-10 h-10 flex items-center justify-center bg-gray-200 rounded-full transition-all hover:bg-gray-300"
                 onClick={() => setSelectedService(service)}
