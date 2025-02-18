@@ -4,7 +4,7 @@ export function ExpertTeam() {
   const team = [
     {
       image: "images/6.png",
-      name: "TRV Fernando",
+      name: "Ranudee Fernando",
       role: "Paddy Yield Prediction",
     },
     {
