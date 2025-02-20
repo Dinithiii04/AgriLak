@@ -63,13 +63,13 @@ export function Hero() {
             </DialogTitle>
           </DialogHeader>
           <p className="text-gray-800">
-            Our system consists of four AI-powered modules:
+            Our AI-driven system for sustainable paddy farming helps optimize various aspects of cultivation through advanced machine learning models:
           </p>
           <ul className="list-disc pl-5 text-gray-800">
-            <li><strong>Paddy Yield Prediction:</strong> Uses past data & weather insights to estimate yields.</li>
-            <li><strong>Pest and Disease Detection:</strong> Analyzes images to detect infections early.</li>
-            <li><strong>Soil Quality Analysis:</strong> Evaluates nutrients & moisture to guide fertilization.</li>
-            <li><strong>Irrigation Optimization:</strong> Recommends precise water levels based on climate data.</li>
+            <li><strong>How Machine Learning Models Work:</strong> Machine learning models are trained using historical data on weather, soil, and crop conditions to make accurate predictions and provide valuable insights for smarter farming practices.</li>
+            <li><strong>Model Training:</strong> Our models undergo a structured process involving supervised learning, feature selection, algorithm testing, and continuous improvements, ensuring accurate predictions for paddy yield, pest control, fertilizer recommendations, and irrigation.</li>
+            <li><strong>Sustainability Impact:</strong> The system significantly reduces water waste, minimizes pesticide use, boosts paddy yield, and prevents soil degradation—leading to more sustainable farming practices.</li>
+            <li><strong>Future Enhancements:</strong> We are working on integrating real-time satellite monitoring, IoT sensors, automated farming bots, and blockchain technology for further improvements in productivity and transparency.</li>
           </ul>
         </DialogContent>
       </Dialog>
