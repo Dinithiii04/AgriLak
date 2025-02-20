@@ -56,23 +56,49 @@ export function Hero() {
 
       {/* Modal for "Learn More" */}
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="max-w-2xl bg-white p-6 rounded-lg shadow-lg">
+      <DialogContent className="max-w-2xl bg-white p-6 rounded-lg shadow-lg max-h-screen overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="text-black text-lg font-bold">
-              How Our AI Models Work
+              Learn More About Our AI-Driven Paddy Farming
             </DialogTitle>
           </DialogHeader>
-          <p className="text-gray-800">
-            Our AI-driven system for sustainable paddy farming helps optimize various aspects of cultivation through advanced machine learning models:
-          </p>
+          <p className="text-gray-800 font-semibold">📌 How the AI Models Work:</p>
           <ul className="list-disc pl-5 text-gray-800">
-            <li><strong>How Machine Learning Models Work:</strong> Machine learning models are trained using historical data on weather, soil, and crop conditions to make accurate predictions and provide valuable insights for smarter farming practices.</li>
-            <li><strong>Model Training:</strong> Our models undergo a structured process involving supervised learning, feature selection, algorithm testing, and continuous improvements, ensuring accurate predictions for paddy yield, pest control, fertilizer recommendations, and irrigation.</li>
-            <li><strong>Sustainability Impact:</strong> The system significantly reduces water waste, minimizes pesticide use, boosts paddy yield, and prevents soil degradation—leading to more sustainable farming practices.</li>
-            <li><strong>Future Enhancements:</strong> We are working on integrating real-time satellite monitoring, IoT sensors, automated farming bots, and blockchain technology for further improvements in productivity and transparency.</li>
+            <li><strong>Paddy Yield Prediction:</strong> Uses Regression models (e.g., Random Forest) to estimate expected yield based on soil, weather, and historical data.</li>
+            <li><strong>Pest and Disease Detection:</strong> Employs Convolutional Neural Networks (CNN) for image-based detection of crop diseases and pest infestations.</li>
+            <li><strong>Fertilizer Recommendation:</strong> Uses Random Forest and Decision Trees to analyze soil composition and recommend optimal fertilizer usage.</li>
+            <li><strong>Irrigation Optimization:</strong> Utilizes a binary classification model to determine whether to irrigate based on environmental factors.</li>
+          </ul>
+
+          <p className="text-gray-800 font-semibold mt-4">📌 Dataset & Model Training:</p>
+          <ul className="list-disc pl-5 text-gray-800">
+            <li>Historical yield data, soil properties, and climate patterns.</li>
+            <li>Labeled image datasets of infected and healthy plants.</li>
+            <li>Agricultural soil datasets for fertilizer optimization.</li>
+            <li>Weather datasets including humidity, temperature, and soil moisture levels.</li>
+          </ul>
+
+          <p className="text-gray-800 font-semibold mt-4">📌 Sustainability Impact:</p>
+          <p className="text-gray-800">Our AI-driven recommendations contribute to sustainable agriculture by optimizing fertilizer use, reducing pesticide waste, improving irrigation efficiency, and enhancing overall yield.</p>
+
+          <p className="text-gray-800 font-semibold mt-4">📌 Future Enhancements:</p>
+          <ul className="list-disc pl-5 text-gray-800">
+            <li>Integration of real-time sensor data for improved accuracy.</li>
+            <li>Mobile application support for farmer accessibility.</li>
+            <li>Advanced deep learning for pest detection.</li>
+            <li>AI-driven automated drone monitoring for large-scale farming.</li>
+          </ul>
+
+          <p className="text-gray-800 font-semibold mt-4">📌 Link to Research & Documentation:</p>
+          <p className="text-gray-800">For more details, visit:</p>
+          <ul className="list-disc pl-5 text-gray-800">
+            <li><strong>GitHub Repository:</strong> [Your GitHub Link]</li>
+            <li><strong>Research Paper/Whitepaper:</strong> [Your Research Link]</li>
+            <li><strong>API Documentation:</strong> [Your API Documentation Link]</li>
           </ul>
         </DialogContent>
       </Dialog>
     </div>
   );
 }
+
