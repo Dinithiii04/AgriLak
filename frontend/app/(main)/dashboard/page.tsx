@@ -6,6 +6,7 @@ import { DashboardCard } from "@/components/dashboard-card"
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
 import { useEffect, useState } from "react"
 import GifLoader from "@/components/loader"
+import { useUserProfile } from "@/hooks/useUserProfile"
 
 const data = [
   { month: "Jan", prediction: 4.2 },
@@ -36,6 +37,7 @@ const alerts = [
 
 export default function DashboardPage() {
   const [isLoading, setIsLoading] = useState(true)
+   const { user, error } = useUserProfile();
 
   useEffect(() => {
     // Simulate loading time
