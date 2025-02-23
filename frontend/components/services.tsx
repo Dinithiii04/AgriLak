@@ -17,7 +17,7 @@ export function Services() {
       description: "AI-powered yield forecasting for better crop planning and decision-making.",
       image: "/images/paddy-img2.jpg",
       longDescription:
-        "Lexi uses an AI-driven approach to personalize each user's learning journey, ensuring the content and exercises are tailored to their unique needs. This individualized support helps users overcome specific challenges they face.",
+        "Our AI model analyses historical weather and soil conditions to provide accurate yield forecasts.helping farmers plan ahead and optimize production.",
     },
     {
       icon: <Droplet className="w-10 h-10 text-green-800" />,
