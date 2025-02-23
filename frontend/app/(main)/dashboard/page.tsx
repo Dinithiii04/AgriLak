@@ -6,6 +6,7 @@ import { DashboardCard } from "@/components/dashboard-card"
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
 import { useEffect, useState } from "react"
 import GifLoader from "@/components/loader"
+// Pass lazy option so the hook doesn’t auto-fetch.
 import { useUserProfile } from "@/hooks/useUserProfile"
 
 const data = [
@@ -37,7 +38,8 @@ const alerts = [
 
 export default function DashboardPage() {
   const [isLoading, setIsLoading] = useState(true)
-   const { user, error } = useUserProfile();
+  // Assume useUserProfile accepts a lazy flag and returns a fetch function
+  const { user, error, fetchUserProfile } = useUserProfile({ lazy: true })
 
   useEffect(() => {
     // Simulate loading time
@@ -47,6 +49,13 @@ export default function DashboardPage() {
 
     return () => clearTimeout(timer)
   }, [])
+
+  useEffect(() => {
+    if (!isLoading) {
+      // Fetch user profile after page mounted and loading is finished
+      fetchUserProfile()
+    }
+  }, [isLoading, fetchUserProfile])
 
   if (isLoading) {
     return <GifLoader />
