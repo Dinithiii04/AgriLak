@@ -131,11 +131,11 @@ export default function IrrigationOptimizationPage() {
   }
 
   return (
-    <div className="container max-w-[800px] py-8">
+    <div className="container max-w-[800px] py-12">
       <h1 className="text-3xl font-bold">Irrigation Optimization</h1>
       <p className="text-muted-foreground mt-2">Enter environmental and soil parameters to optimize irrigation.</p>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 mt-8">
           <Card>
             <CardHeader>
               <CardTitle>Environmental & Soil Parameters</CardTitle>

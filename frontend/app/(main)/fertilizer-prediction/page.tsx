@@ -165,16 +165,16 @@ export default function FertilizerPredictionPage() {
       </div>
     );
   }
-
+  
   return (
-    <div className="container max-w-[800px] py-8">
+    <div className="container max-w-[800px] py-12">
       <h1 className="text-3xl font-bold">Fertilizer Prediction</h1>
       <p className="text-muted-foreground mt-2">
         Enter your soil and environmental parameters to get personalized fertilizer recommendations.
       </p>
-
+      
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 mt-10"> 
           <Card>
             <CardHeader>
               <CardTitle>Soil & Environmental Parameters</CardTitle>

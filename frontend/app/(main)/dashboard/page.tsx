@@ -63,7 +63,7 @@ export default function DashboardPage() {
   return (
     <div className="container max-w-[1000px] py-8 space-y-8">
       <div>
-        <h1 className="text-3xl font-bold">Dashboard Overview</h1>
+        <h1 className="text-3xl font-bold">Dashboard </h1>
         <p className="text-muted-foreground mt-2">
           Welcome back! Here&apos;s what &apos;s happening with your fields.
         </p>

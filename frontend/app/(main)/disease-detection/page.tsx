@@ -57,7 +57,7 @@ export default function DiseaseDetectionPage() {
       });
 
       setResult({
-        disease: response.data.disease,  // ✅ Updated key to match backend
+        disease: response.data.disease,  //  Updated key to match backend
         confidence: response.data.confidence,
         imageUrl: URL.createObjectURL(values.image),
       });
@@ -84,15 +84,15 @@ export default function DiseaseDetectionPage() {
   }
 
   return (
-    <div className="container max-w-[800px] py-8">
+    <div className="container max-w-[800px] py-12">
       <h1 className="text-3xl font-bold">Paddy Disease Detection</h1>
       <p className="text-muted-foreground mt-2">
         Upload an image of the affected paddy leaves to detect diseases.
       </p>
 
       {result ? (
-        <div className="space-y-8">
-          <Button variant="ghost" className="flex items-center gap-2" onClick={handleReset}>
+        <div className="space-y-8 ">
+          <Button variant="ghost" className="flex items-center gap-2 " onClick={handleReset}>
             <ArrowLeft className="h-4 w-4" /> Back to Upload
           </Button>
 
@@ -119,7 +119,7 @@ export default function DiseaseDetectionPage() {
         </div>
       ) : (
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 mt-10">
             <Card>
               <CardHeader>
                 <CardTitle>Upload Image</CardTitle>
