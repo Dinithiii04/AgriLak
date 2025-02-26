@@ -1,9 +1,10 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
-import { Switch } from "@/components/ui/switch"
-import { useAuth } from "@/context/AuthContext"
-import { cn } from "@/lib/utils"
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
+import { useAuth } from "@/context/AuthContext";
+import { cn } from "@/lib/utils";
 import {
   Droplets,
   FireExtinguisher,
@@ -13,12 +14,12 @@ import {
   PanelLeft,
   PanelLeftClose,
   Leaf as Plant,
-  User
-} from "lucide-react"
-import { useTheme } from "next-themes"
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { useState } from "react"
+  User,
+} from "lucide-react";
+import { useTheme } from "next-themes";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useState } from "react";
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: LineChart },
@@ -26,17 +27,17 @@ const navigation = [
   { name: "Disease Detection", href: "/disease-detection", icon: Flask },
   { name: "Fertilizer", href: "/fertilizer-prediction", icon: FireExtinguisher },
   { name: "Irrigation", href: "/irrigation-optimization", icon: Droplets },
-]
+];
 
 const bottomNavigation = [
   { name: "Profile", href: "/profile", icon: User },
-]
+];
 
 export function Sidebar() {
-  const pathname = usePathname()
-  const { theme, setTheme } = useTheme()
-  const [isCollapsed, setIsCollapsed] = useState(false)
-  const { logout } = useAuth()
+  const pathname = usePathname();
+  const { theme, setTheme } = useTheme();
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  const { logout } = useAuth();
   return (
     <>
       <div
@@ -45,14 +46,19 @@ export function Sidebar() {
           isCollapsed ? "w-20" : "w-64"
         )}
       >
-        <div className="flex h-16 items-center gap-2 px-4 border-b">
-          <Plant className="h-6 w-6 text-primary flex-shrink-0" />
-          {!isCollapsed && <span className="font-bold text-xl">AgriLak</span>}
+        <div className="flex h-16 items-center gap-1 px-4 border-b"> {/* Reduced gap */}
+          <Image 
+          src="/images/logo.svg" 
+          alt="AgriLak Logo" 
+          width={56} 
+          height={56} 
+          className="h-14 w-14" />
+          {!isCollapsed && <span className="font-bold text-lg  text-[#558B2F]">AgriLak</span>}
         </div>
 
         <div className="flex-1 space-y-1 p-4">
           {navigation.map((item) => {
-            const isActive = pathname === item.href
+            const isActive = pathname === item.href;
             return (
               <Link
                 key={item.name}
@@ -67,7 +73,7 @@ export function Sidebar() {
                 <item.icon className="h-5 w-5 flex-shrink-0" />
                 {!isCollapsed && item.name}
               </Link>
-            )
+            );
           })}
         </div>
 
@@ -104,8 +110,6 @@ export function Sidebar() {
                 >
                   <PanelLeftClose className="h-4 w-4" />
                 </Button>
-                
-                
               </>
             )}
             {isCollapsed && (
@@ -130,5 +134,5 @@ export function Sidebar() {
         <main className="flex-1">{/* Content */}</main>
       </div>
     </>
-  )
+  );
 }
