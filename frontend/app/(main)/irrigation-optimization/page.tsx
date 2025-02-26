@@ -22,9 +22,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { ArrowLeft, Droplets, Thermometer, FlaskRound as Flask } from "lucide-react";
-import { ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, Radar } from "recharts";
-
+import { ArrowLeft } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const formSchema = z.object({
   T2M: z.string().min(1, "Required"),
@@ -41,9 +40,20 @@ type FormValues = z.infer<typeof formSchema>;
 interface PredictionResult {
   inputs: FormValues;
   recommendation: string;
-  confidence: number; //
+  confidence: number;
   details: string;
 }
+
+// Feature labels mapping
+const featureLabels: Record<keyof FormValues, string> = {
+  T2M: "Temperature at 2M (°C)",
+  T2M_RANGE: "Temperature Range (°C)",
+  T2MDEW: "Dew Point Temperature (°C)",
+  RH2M: "Relative Humidity at 2M (%)",
+  soil_moisture: "Soil Moisture (%)",
+  Rainfall: "Rainfall (mm)",
+  Month: "Month",
+};
 
 export default function IrrigationOptimizationPage() {
   const [result, setResult] = useState<PredictionResult | null>(null);
@@ -115,16 +125,16 @@ export default function IrrigationOptimizationPage() {
             <CardDescription>Based on your soil and climate data</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
-              <div className="text-center p-6 bg-primary/10 rounded-lg">
-                <h3 className="text-3xl font-bold text-primary mb-2">
-                  {result.recommendation}
-                </h3>
-                <div className="text-sm text-muted-foreground">
-                  Confidence: {result.confidence}
-                </div>
+            <div className="text-center p-6 bg-primary/10 rounded-lg">
+              <h3 className="text-3xl font-bold text-primary mb-2">
+                {result.recommendation}
+              </h3>
+              <div className="text-sm text-muted-foreground">
+                Confidence: {result.confidence}
               </div>
-              <p className="text-muted-foreground">{result.details}</p>
-            </CardContent>
+            </div>
+            <p className="text-muted-foreground">{result.details}</p>
+          </CardContent>
         </Card>
       </div>
     );
@@ -141,22 +151,63 @@ export default function IrrigationOptimizationPage() {
               <CardTitle>Environmental & Soil Parameters</CardTitle>
             </CardHeader>
             <CardContent className="grid gap-6 grid-cols-2">
-              {Object.keys(formSchema.shape).map((key) => (
-                <FormField
-                  key={key}
-                  control={form.control}
-                  name={key as keyof FormValues}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>{key.replace(/_/g, " ")}</FormLabel>
-                      <FormControl>
-                        <Input placeholder={`Enter ${key}`} {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              ))}
+              {Object.keys(formSchema.shape).map((key) =>
+                key === "Month" ? (
+                  <FormField
+                    key={key}
+                    control={form.control}
+                    name="Month"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{featureLabels["Month"]}</FormLabel>
+                        <FormControl>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select a month" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {[
+                                "January",
+                                "February",
+                                "March",
+                                "April",
+                                "May",
+                                "June",
+                                "July",
+                                "August",
+                                "September",
+                                "October",
+                                "November",
+                                "December",
+                              ].map((month) => (
+                                <SelectItem key={month} value={month}>
+                                  {month}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                ) : (
+                  <FormField
+                    key={key}
+                    control={form.control}
+                    name={key as keyof FormValues}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{featureLabels[key as keyof FormValues]}</FormLabel>
+                        <FormControl>
+                          <Input placeholder={`Enter ${featureLabels[key as keyof FormValues]}`} {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )
+              )}
             </CardContent>
           </Card>
           <Button type="submit" className="w-full" disabled={isLoading}>
