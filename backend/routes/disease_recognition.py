@@ -14,15 +14,15 @@ MODEL_PATH = os.path.join(BASE_DIR, "..", "models", "pest_disease", "rice_diseas
 
 try:
     model = tf.keras.models.load_model(MODEL_PATH)
-    print("✅ Model loaded successfully!")
+    print(" Model loaded successfully!")
 except Exception as e:
-    raise RuntimeError(f"❌ Failed to load model: {e}")
+    raise RuntimeError(f" Failed to load model: {e}")
 
 # Define classes based on dataset
 class_labels = ["bacterial_leaf_blight", "healthy", "leaf_blast", "leaf_scald"]
 
 def preprocess_image(image):
-    """Preprocess image for model prediction"""
+    #Preprocess image for model prediction
     try:
         image = image.convert("RGB")  # Ensure image is in RGB mode
         image = image.resize((96, 96))  # Resize to match model input
@@ -58,7 +58,7 @@ def predict():
 
         # Return prediction result
         return jsonify({
-            "disease": predicted_class,  # ✅ Updated key to match frontend
+            "disease": predicted_class,  #  Updated key to match frontend
             "confidence": f"{confidence:.4f}"
         }), 200
 

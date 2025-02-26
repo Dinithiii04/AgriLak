@@ -7,7 +7,6 @@ import { AboutGardening } from '@/components/about-gardening';
 import { CareServices } from '@/components/care-services';
 import { AboutSection } from '@/components/gardening-services';
 import { ExpertTeam } from '@/components/expert-team';
-import { Testimonial } from '@/components/testimonial';
 import { BlogSection } from '@/components/blog-section';
 import { useEffect, useState } from 'react';
 import GifLoader from '@/components/loader';
