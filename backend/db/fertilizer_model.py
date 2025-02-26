@@ -26,9 +26,3 @@ class FertilizerModel:
             {"user_id": user_id},  # Filter by user ID
             {'_id': 0}  # Exclude MongoDB's internal _id field
         ))
-
-    @staticmethod
-    def get_past_confidences(limit=50):
-        #Fetch past confidence scores to dynamically adjust the threshold.
-        past_predictions = mongo.db.predictions.find({}, {"confidence": 1}).limit(limit)
-        return [pred["confidence"] for pred in past_predictions if "confidence" in pred]
