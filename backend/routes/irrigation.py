@@ -32,6 +32,13 @@ except Exception as e:
     print(f"Error loading scaler: {e}")
     scaler = None
 
+month_mapping = {
+    "January": 1, "February": 2, "March": 3, "April": 4,
+    "May": 5, "June": 6, "July": 7, "August": 8,
+    "September": 9, "October": 10, "November": 11, "December": 12
+}
+
+
 
 @irrigation_bp.route('/predict', methods=['POST'])
 def pred():
@@ -43,7 +50,10 @@ def pred():
         RH2M = float(data.get('RH2M', 0))
         GWETTOP = float(data.get('soil_moisture', 0))
         Rainfall = float(data.get('Rainfall', 0))
-        Month = int(data.get('Month', 1))
+        Month = data.get('Month', "January")
+
+        if isinstance(Month, str):
+            Month = month_mapping.get(Month, 1)
 
         print('Received Input:', T2M, T2M_RANGE, T2MDEW, RH2M, GWETTOP, Rainfall, Month)
 
