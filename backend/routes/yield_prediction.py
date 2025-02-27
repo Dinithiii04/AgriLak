@@ -10,8 +10,8 @@ yield_bp = Blueprint('yield', __name__)
 
 # Load Model and Scaler
 try:
-    model = joblib.load('models/yield_prediction/yield_prediction_model.pkl')
-    scaler = joblib.load('models/yield_prediction/yield-scaler.pkl')
+    model = joblib.load('models/yield_prediction/yield_pred_model.pkl')
+    scaler = joblib.load('models/yield_prediction/yield_scaler.pkl')
     print("Yield prediction model and scaler loaded successfully!")
 
 except Exception as e:
@@ -19,7 +19,7 @@ except Exception as e:
     model, scaler = None, None
 
 # Feature names used in model
-feature_names = ["Tmax", "Tmin", "Wind", "SRAD", "RH", "Tmax_Tmin", "SRAD_RH",
+feature_names = ["Oct_SRAD", "Sep_Wind", "Aug_SRAD", "Jan_SRAD", "Sep_SRAD", "Nov_Rain", "Aug_Rain", 'Aug_RH',
                  "District_AMPARA", "District_ANURADHAPURA", "District_HAMBANTOTA", "District_POLONNARUWA"]
 
 
@@ -29,9 +29,9 @@ def predict_yield_rf(data):
         X_input_df = pd.DataFrame([data], columns=feature_names)
 
         # Separate numerical and categorical columns
-        numerical_columns = ['RH', 'SRAD', 'SRAD_RH', 'Tmax', 'Tmax_Tmin', 'Tmin', 'Wind']
+        numerical_columns = ['Aug_RH', 'Aug_Rain', 'Aug_SRAD', 'Jan_SRAD', 'Nov_Rain', 'Oct_SRAD', 'Sep_SRAD', 'Sep_Wind']
         X_input_numerical = X_input_df[numerical_columns]
-        X_input_categorical = X_input_df.iloc[:, 7:]
+        X_input_categorical = X_input_df.iloc[:, 8:]
 
         # Scale numerical features
         X_input_numerical_scaled = scaler.transform(X_input_numerical)
