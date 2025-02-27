@@ -58,7 +58,7 @@ def predict():
 
         # Return prediction result
         return jsonify({
-            "disease": predicted_class,  # ✅ Updated key to match frontend
+            "disease": predicted_class,
             "confidence": f"{confidence:.4f}"
         }), 200
 
