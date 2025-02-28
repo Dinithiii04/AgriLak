@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { motion } from "framer-motion"
+// import { motion } from "framer-motion"
 
 interface TypeAnimationProps {
   words: string[]
@@ -41,14 +41,14 @@ export function TypeAnimation({ words, className = "" }: TypeAnimationProps) {
 
   return (
     <div className={`relative ${className}`}>
-      <motion.div key={currentText} initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="inline-block">
+      {/* <motion.div key={currentText} initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="inline-block">
         {currentText}
         <motion.span
           animate={{ opacity: [1, 0] }}
           transition={{ duration: 0.5, repeat: Number.POSITIVE_INFINITY, repeatType: "reverse" }}
           className="ml-1 inline-block w-[2px] h-[1em] bg-current"
         />
-      </motion.div>
+      </motion.div> */}
     </div>
   )
 }
