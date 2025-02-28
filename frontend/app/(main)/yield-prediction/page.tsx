@@ -110,14 +110,14 @@ export default function PaddyYieldPredictionPage() {
   }
 
   return (
-    <div className="container max-w-[800px] py-12">
+    <div className="container max-w-[1000px] py-12">
       <h1 className="text-3xl font-bold">Paddy Yield Prediction</h1>
       <p className="text-muted-foreground mt-2">Provide the relevant weather parameters of Maha cultivation season to accurately predict the paddy yield. Make sure the values are in the correct units as specified below.</p>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 mt-8">
           <Card>
             <CardHeader>
-              <CardTitle>Maha Seasonal Weather Parameters</CardTitle>
+              <CardTitle>Weather Parameters for Maha Season</CardTitle>
             </CardHeader>
             <CardContent className="grid gap-6 grid-cols-2">
               <div className="col-span-1">
