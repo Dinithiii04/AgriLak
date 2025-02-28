@@ -114,7 +114,7 @@ export function Hero() {
 
       <div className="relative max-w-6xl mx-auto">
         <div className="aspect-[16/7] relative overflow-hidden rounded-xl shadow-2xl">
-          <AnimatePresence mode="wait">
+          {<AnimatePresence mode="wait">
             <motion.div
               key={currentImage}
               initial={{ opacity: 0 }}
@@ -131,7 +131,7 @@ export function Hero() {
                 priority
               />
             </motion.div>
-          </AnimatePresence>
+          </AnimatePresence>}
 
           <div className="absolute inset-0 flex items-center justify-between p-4">
             <button

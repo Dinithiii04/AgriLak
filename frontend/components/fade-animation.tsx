@@ -21,7 +21,7 @@ export function FadeAnimation({ words, className = "" }: FadeAnimationProps) {
 
   return (
     <div className={`relative h-[1.5em] ${className}`}>
-      <AnimatePresence mode="wait">
+      {<AnimatePresence mode="wait">
         <motion.div
           key={currentIndex}
           initial={{ opacity: 0, y: 20 }}
@@ -35,7 +35,7 @@ export function FadeAnimation({ words, className = "" }: FadeAnimationProps) {
         >
           {words[currentIndex]}
         </motion.div>
-      </AnimatePresence>
+      </AnimatePresence>}
     </div>
   )
 }
