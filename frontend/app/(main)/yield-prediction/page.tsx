@@ -146,31 +146,38 @@ export default function PaddyYieldPredictionPage() {
               <CardTitle>Weather Parameters for Maha Season</CardTitle>
             </CardHeader>
             <CardContent className="grid gap-6 grid-cols-2">
-              <FormField
-                control={form.control}
-                name="District"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{customLabels["District"]}</FormLabel>
-                    <FormControl>
-                      <Select onValueChange={(value) => form.setValue("District", value)} defaultValue={field.value}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select a district" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {Object.keys(districtMapping).map((district) => (
-                            <SelectItem key={district} value={district}>
-                              {district}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              {/* District should be on the left side alone */}
+              <div className="col-span-1">
+                <FormField
+                  control={form.control}
+                  name="District"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{customLabels["District"]}</FormLabel>
+                      <FormControl>
+                        <Select onValueChange={(value) => form.setValue("District", value)} defaultValue={field.value}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select a district" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {Object.keys(districtMapping).map((district) => (
+                              <SelectItem key={district} value={district}>
+                                {district}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
 
+              {/* Empty right column to push the next fields to the next row */}
+              <div className="col-span-1"></div>
+
+              {/* All other fields should start in the next row */}
               {fieldOrder.filter(key => key !== "District").map((key) => (
                 <FormField
                   key={key}
@@ -188,6 +195,7 @@ export default function PaddyYieldPredictionPage() {
                 />
               ))}
             </CardContent>
+
           </Card>
 
           <Button type="submit" className="w-full" disabled={isLoading}>
