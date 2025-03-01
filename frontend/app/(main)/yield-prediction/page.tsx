@@ -133,7 +133,7 @@ export default function PaddyYieldPredictionPage() {
     form.reset();
   }
 
-  // ✅ If result is available, display the prediction instead of the form
+  // If result is available, display the prediction instead of the form
   if (result) {
     return (
       <div className="container max-w-[1000px] py-8 space-y-8">
@@ -147,7 +147,7 @@ export default function PaddyYieldPredictionPage() {
         <Card>
           <CardHeader>
             <CardTitle>Predicted Paddy Yield</CardTitle>
-            <CardDescription>Based on the provided weather parameters</CardDescription>
+            <CardDescription>Based on the provided weather parameters the predicted yield is:</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="text-center p-6 bg-primary/10 rounded-lg">
