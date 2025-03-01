@@ -20,8 +20,10 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
+  CardDescription,
 } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { ArrowLeft } from "lucide-react";
 
 // Define schema for form validation
 const formSchema = z.object({
@@ -131,6 +133,38 @@ export default function PaddyYieldPredictionPage() {
     form.reset();
   }
 
+  // ✅ If result is available, display the prediction instead of the form
+  if (result) {
+    return (
+      <div className="container max-w-[1000px] py-8 space-y-8">
+        {/* Back to Form Button */}
+        <Button variant="ghost" className="flex items-center gap-2" onClick={handleReset}>
+          <ArrowLeft className="h-4 w-4" />
+          Back to Form
+        </Button>
+
+        {/* Prediction Result Card */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Predicted Paddy Yield</CardTitle>
+            <CardDescription>Based on the provided weather parameters</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="text-center p-6 bg-primary/10 rounded-lg">
+              <h3 className="text-3xl font-bold text-primary mb-2">
+                {result.predicted_yield} kg/ha
+              </h3>
+              <div className="text-sm text-muted-foreground">
+                Confidence: {result.confidence_percentage}%
+              </div>
+            </div>
+            <p className="text-muted-foreground">{result.message}</p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="container max-w-[1000px] py-12">
       <h1 className="text-3xl font-bold">Paddy Yield Prediction</h1>
@@ -146,7 +180,6 @@ export default function PaddyYieldPredictionPage() {
               <CardTitle>Weather Parameters for Maha Season</CardTitle>
             </CardHeader>
             <CardContent className="grid gap-6 grid-cols-2">
-              {/* District should be on the left side alone */}
               <div className="col-span-1">
                 <FormField
                   control={form.control}
@@ -174,28 +207,20 @@ export default function PaddyYieldPredictionPage() {
                 />
               </div>
 
-              {/* Empty right column to push the next fields to the next row */}
               <div className="col-span-1"></div>
 
-              {/* All other fields should start in the next row */}
               {fieldOrder.filter(key => key !== "District").map((key) => (
-                <FormField
-                  key={key}
-                  control={form.control}
-                  name={key}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>{customLabels[key]}</FormLabel>
-                      <FormControl>
-                        <Input placeholder={`Enter ${customLabels[key]}`} {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                <FormField key={key} control={form.control} name={key} render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{customLabels[key]}</FormLabel>
+                    <FormControl>
+                      <Input placeholder={`Enter ${customLabels[key]}`} {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}/>
               ))}
             </CardContent>
-
           </Card>
 
           <Button type="submit" className="w-full" disabled={isLoading}>
@@ -205,20 +230,6 @@ export default function PaddyYieldPredictionPage() {
           {error && <p className="text-red-500 text-center">{error}</p>}
         </form>
       </Form>
-
-      {/*Display Prediction Result */}
-      {result && (
-        <Card className="mt-8">
-          <CardHeader>
-            <CardTitle>Predicted Paddy Yield</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-center text-xl font-bold">Predicted Yield: {result.predicted_yield} kg/ha</p>
-            <p className="text-center text-sm text-muted-foreground">Confidence: {result.confidence_percentage}%</p>
-            <p className="text-center text-muted-foreground">{result.message}</p>
-          </CardContent>
-        </Card>
-      )}
     </div>
   );
 }
