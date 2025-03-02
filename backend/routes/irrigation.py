@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
 import pickle
+import joblib
 import numpy as np
 import pandas as pd
 
@@ -22,7 +23,6 @@ try:
 except Exception as e:
     print(f"Error loading model: {e}")
     model = None
-
 
 try:
     with open('models/irrigation/StandardScaler.pkl', 'rb') as f:
@@ -75,7 +75,7 @@ def pred():
         confidence = np.max(prediction_probs)
         predicted_class = np.argmax(prediction_probs)
 
-        threshold = 0.90
+        threshold = 0.79
         if confidence >= threshold:
             if predicted_class == 0:
                 result="Irrigate"
