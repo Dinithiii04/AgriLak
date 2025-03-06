@@ -10,6 +10,7 @@ import { ExpertTeam } from '@/components/expert-team';
 import { BlogSection } from '@/components/blog-section';
 import { useEffect, useState } from 'react';
 import GifLoader from '@/components/loader';
+import ChatWidget from '@/components/chat-widget';
 
 export default function Home() {  const [isLoading, setIsLoading] = useState(true)
 
@@ -31,6 +32,7 @@ export default function Home() {  const [isLoading, setIsLoading] = useState(tru
       <Services />
       <Stats />
       <CareServices />
+      <ChatWidget/>
       <AboutSection />
       <ExpertTeam />
     </div>
