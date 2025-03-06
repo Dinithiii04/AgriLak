@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { useState } from "react";
+import { SetStateAction, useState } from "react";
 import { Leaf, Plus, Minus } from "lucide-react";
 
 export function AboutSection() {
@@ -22,11 +22,13 @@ export function AboutSection() {
     }
   ];
 
-  const [openIndex, setOpenIndex] = useState(null);
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
 
-  const toggleFAQ = (index) => {
-    setOpenIndex(openIndex === index ? null : index);
-  };
+const toggleFAQ = (index: number) => {
+  setOpenIndex(openIndex === index ? null : index);
+};
+
+  
 
   return (
     <section className="py-16 bg-white">
