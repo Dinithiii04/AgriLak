@@ -4,6 +4,13 @@ import type React from "react"
 import { useState, useRef, useEffect } from "react"
 import Image from "next/image"
 import { X, Send, Maximize2 } from "lucide-react"
+import { unified } from 'unified'
+import remarkParse from 'remark-parse'
+import remarkGfm from 'remark-gfm'
+import remarkRehype from 'remark-rehype'
+import rehypeRaw from 'rehype-raw'
+import rehypeStringify from 'rehype-stringify'
+import parse from 'html-react-parser'
 
 interface Message {
   id: string
@@ -12,26 +19,293 @@ interface Message {
   timestamp: Date
 }
 
+// Function to convert markdown to HTML
+const markdownToHtml = async (markdown: string): Promise<string> => {
+  const result = await unified()
+    .use(remarkParse)
+    .use(remarkGfm) // Supports GitHub Flavored Markdown
+    .use(remarkRehype, { allowDangerousHtml: true })
+    .use(rehypeRaw) // Allow HTML in markdown
+    .use(rehypeStringify)
+    .process(markdown)
+    
+  return result.toString()
+}
+
+// Reusable Message Bubble Component
+const MessageBubble = ({ message }: { message: Message }) => {
+  const isUser = message.sender === "user"
+  const [htmlContent, setHtmlContent] = useState<string | React.ReactNode>(message.content)
+  
+  useEffect(() => {
+    // Only parse bot messages as markdown (user messages are plain text)
+    if (message.sender === "bot") {
+      markdownToHtml(message.content)
+        .then(html => {
+          // Apply custom styling to the HTML
+          const styledHtml = html
+            .replace(/<pre>/g, '<pre class="bg-gray-800 p-2 rounded my-1 overflow-x-auto">')
+            .replace(/<code>/g, '<code class="font-mono text-sm">')
+            .replace(/<a /g, '<a class="text-blue-400 underline" target="_blank" rel="noopener noreferrer" ')
+            .replace(/<ul>/g, '<ul class="list-disc pl-5 my-1">')
+            .replace(/<ol>/g, '<ol class="list-decimal pl-5 my-1">')
+            .replace(/<li>/g, '<li class="my-0.5">')
+            .replace(/<table>/g, '<table class="border-collapse my-2">')
+            .replace(/<th>/g, '<th class="border border-gray-700 px-2 py-1">')
+            .replace(/<td>/g, '<td class="border border-gray-700 px-2 py-1">')
+          
+          setHtmlContent(parse(styledHtml))
+        })
+        .catch(err => {
+          console.error('Error parsing markdown:', err)
+          setHtmlContent(message.content)
+        })
+    }
+  }, [message.content, message.sender])
+  
+  return (
+    <div className={`flex ${isUser ? "justify-end" : "justify-start"} mb-3`}>
+      {!isUser && (
+        <div className="w-8 h-8 rounded-full bg-green-600 flex items-center justify-center text-white mr-2">
+          A
+        </div>
+      )}
+      <div
+        className={`max-w-[70%] rounded-lg px-3 py-2 ${
+          isUser ? "bg-gray-700 text-white" : "bg-gray-600 text-white"
+        }`}
+      >
+        {htmlContent}
+      </div>
+      {isUser && (
+        <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center text-white ml-2">
+          F
+        </div>
+      )}
+    </div>
+  )
+}
+
+// Typing Indicator Component
+const TypingIndicator = () => (
+  <div className="flex justify-start mb-3">
+    <div className="w-8 h-8 rounded-full bg-green-600 flex items-center justify-center text-white mr-2">
+      A
+    </div>
+    <div className="bg-gray-600 text-white rounded-lg px-4 py-2">
+      <div className="flex gap-1">
+        <div className="w-2 h-2 bg-white rounded-full animate-bounce delay-200"></div>
+        <div className="w-2 h-2 bg-white rounded-full animate-bounce delay-400"></div>
+        <div className="w-2 h-2 bg-white rounded-full animate-bounce delay-600"></div>
+      </div>
+    </div>
+  </div>
+)
+
+// Chat Header Component
+const ChatHeader = ({ onClose, onExpand }: { onClose: () => void; onExpand: () => void }) => (
+  <div className="flex items-center justify-between p-2 border-b border-gray-700">
+    <div className="flex items-center gap-2">
+      {/* <Image src="images/agro.jpg" alt="Agro Bot" width={20} height={20} className="rounded-full" /> */}
+      <span className="text-white text-sm">Agro on platform</span>
+    </div>
+    <div className="flex gap-1">
+      <button onClick={onExpand} className="w-5 h-5 flex items-center justify-center rounded-full bg-blue-500" title="Expand">
+        <Maximize2 size={12} className="text-white" />
+      </button>
+      <button onClick={onClose} className="w-5 h-5 flex items-center justify-center rounded-full bg-red-500" title="Close">
+        <X size={12} className="text-white" />
+      </button>
+    </div>
+  </div>
+)
+
+// Quick Messages Component
+const QuickMessages = ({ onSelect }: { onSelect: (message: string) => void }) => {
+  const quickMessages = [
+    "How to detect plant diseases?",
+    "Best fertilizers for paddy?",
+    "Tips for irrigation",
+    "Weather impacts on crops",
+    "Crop rotation benefits",
+    "Pest control methods",
+    "Organic farming tips"
+  ]
+
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollLeft, setScrollLeft] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    setIsDragging(true);
+    if (scrollRef.current) {
+      setStartX(e.pageX - scrollRef.current.offsetLeft);
+      setScrollLeft(scrollRef.current.scrollLeft);
+    }
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setIsDragging(true);
+    if (scrollRef.current) {
+      setStartX(e.touches[0].pageX - scrollRef.current.offsetLeft);
+      setScrollLeft(scrollRef.current.scrollLeft);
+    }
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  const handleTouchEnd = () => {
+    setIsDragging(false);
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging || !scrollRef.current) return;
+    e.preventDefault();
+    const x = e.pageX - scrollRef.current.offsetLeft;
+    const walk = (x - startX) * 2;
+    scrollRef.current.scrollLeft = scrollLeft - walk;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!isDragging || !scrollRef.current) return;
+    const x = e.touches[0].pageX - scrollRef.current.offsetLeft;
+    const walk = (x - startX) * 2;
+    scrollRef.current.scrollLeft = scrollLeft - walk;
+  };
+
+  useEffect(() => {
+    let animationFrameId: number;
+    let startTime: number;
+    
+    const animate = (timestamp: number) => {
+      if (!startTime) startTime = timestamp;
+      const progress = timestamp - startTime;
+      
+      if (scrollRef.current && !isHovered && !isDragging) {
+        // Complete scroll cycle every 20 seconds
+        const scrollWidth = scrollRef.current.scrollWidth - scrollRef.current.clientWidth;
+        const normalizedProgress = (progress % 20000) / 20000; // 20 seconds cycle
+        const scrollPosition = scrollWidth * normalizedProgress;
+        scrollRef.current.scrollLeft = scrollPosition;
+      }
+      
+      animationFrameId = requestAnimationFrame(animate);
+    };
+    
+    animationFrameId = requestAnimationFrame(animate);
+    
+    return () => {
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+      }
+    };
+  }, [isHovered, isDragging]);
+
+  return (
+    <div 
+      className="relative border-t border-gray-700"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      <div 
+        ref={scrollRef}
+        className="flex overflow-x-auto no-scrollbar py-2 px-2 cursor-grab active:cursor-grabbing select-none"
+        onMouseDown={handleMouseDown}
+        onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseUp}
+        onMouseMove={handleMouseMove}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+        onTouchMove={handleTouchMove}
+        style={{
+          overscrollBehavior: 'contain',
+          WebkitOverflowScrolling: 'touch',
+        }}
+      >
+        <div className="flex gap-2 items-center min-w-max">
+          {quickMessages.map((message, index) => (
+            <button
+              key={index}
+              onClick={() => onSelect(message)}
+              className="text-xs whitespace-nowrap bg-gray-700 hover:bg-gray-600 text-white px-3 py-1 rounded-full transition-colors flex-shrink-0"
+            >
+              {message}
+            </button>
+          ))}
+        </div>
+      </div>
+      <style jsx>{`
+        .no-scrollbar::-webkit-scrollbar {
+          display: none;
+        }
+        .no-scrollbar {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+          -webkit-user-select: none;
+          user-select: none;
+          touch-action: pan-x;
+        }
+      `}</style>
+    </div>
+  )
+}
+
+// Chat Input Component with Quick Messages
+const ChatInput = ({ value, onChange, onSubmit, onQuickMessageSelect }: { 
+  value: string; 
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void; 
+  onSubmit: (e: React.FormEvent) => void;
+  onQuickMessageSelect: (message: string) => void;
+}) => (
+  <div className="flex-none">
+    <QuickMessages onSelect={onQuickMessageSelect} />
+    <form onSubmit={onSubmit} className="border-t border-gray-700 p-2 flex items-center gap-2">
+      <div className="flex items-center gap-1 bg-black rounded-full px-3 py-1 flex-1">
+        <input
+          type="text"
+          value={value}
+          onChange={onChange}
+          placeholder="say hi Agro"
+          className="bg-transparent text-white w-full focus:outline-none text-sm"
+        />
+      </div>
+      <button type="submit" disabled={!value.trim()} className={`p-1 rounded-full ${!value.trim() ? "opacity-50" : ""}`} title="Send">
+        <Send size={18} className="text-white" />
+      </button>
+    </form>
+  </div>
+)
+
 export default function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false)
   const [isExpanded, setIsExpanded] = useState(false)
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
-      content: "Hi Agro!",
-      sender: "user",
-      timestamp: new Date(),
-    },
-    {
-      id: "2",
-      content: "Hey there! It's great to connect. How are you doing today?",
+      content: "Hello, I'm Agro! I can help you with agricultural questions and advice. How can I assist you today?",
       sender: "bot",
       timestamp: new Date(),
-    },
+    }
   ])
   const [inputValue, setInputValue] = useState("")
   const [isTyping, setIsTyping] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
+
+  // Store conversation history for API calls
+  const [conversationHistory, setConversationHistory] = useState([
+    {
+      role: "system",
+      content: "You are Agro, an agricultural assistant specialized in helping farmers with crop management, disease detection, and agricultural best practices. Provide helpful, accurate, and concise information. Focus on being practical and actionable in your advice."
+    },
+    {
+      role: "assistant",
+      content: "Hello, I'm Agro! I can help you with agricultural questions and advice. How can I assist you today?"
+    }
+  ])
 
   const toggleChat = () => {
     setIsOpen(!isOpen)
@@ -45,36 +319,178 @@ export default function ChatWidget() {
     setInputValue(e.target.value)
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleQuickMessageSelect = (message: string) => {
+    // Instead of setting input value, directly send the message
+    const userMessage = message.trim();
+    const newUserMessage: Message = {
+      id: Date.now().toString(),
+      content: userMessage,
+      sender: "user",
+      timestamp: new Date(),
+    };
+
+    // Add user message to UI
+    setMessages((prev) => [...prev, newUserMessage]);
+    
+    // Add to conversation history
+    const updatedHistory = [
+      ...conversationHistory,
+      { role: "user", content: userMessage }
+    ];
+    setConversationHistory(updatedHistory);
+    
+    // Show typing indicator
+    setIsTyping(true);
+
+    // Make API request
+    fetch('/api/chat', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        messages: updatedHistory,
+        temperature: 0.7,
+        maxTokens: 2048
+      }),
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Failed to get response: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then(data => {
+      const botResponseContent = data.choices[0].message.content;
+      
+      // Add bot response to conversation history
+      setConversationHistory([
+        ...updatedHistory,
+        { role: "assistant", content: botResponseContent }
+      ]);
+
+      // Add bot response to UI
+      const botResponse: Message = {
+        id: (Date.now() + 1).toString(),
+        content: botResponseContent,
+        sender: "bot",
+        timestamp: new Date(),
+      };
+      
+      setMessages((prev) => [...prev, botResponse]);
+    })
+    .catch(error => {
+      console.error('Error communicating with Agro AI:', error);
+      
+      // Add error message to UI
+      const errorResponse: Message = {
+        id: (Date.now() + 1).toString(),
+        content: "Sorry, I'm having trouble connecting right now. Please try again later. Error: " + error.message,
+        sender: "bot",
+        timestamp: new Date(),
+      };
+      
+      setMessages((prev) => [...prev, errorResponse]);
+    })
+    .finally(() => {
+      setIsTyping(false);
+    });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!inputValue.trim()) return
 
+    const userMessage = inputValue.trim()
     const newUserMessage: Message = {
       id: Date.now().toString(),
-      content: inputValue,
+      content: userMessage,
       sender: "user",
       timestamp: new Date(),
     }
 
+    // Add user message to UI
     setMessages((prev) => [...prev, newUserMessage])
+    
+    // Add to conversation history
+    const updatedHistory = [
+      ...conversationHistory,
+      { role: "user", content: userMessage }
+    ]
+    setConversationHistory(updatedHistory)
+    
+    // Clear input and show typing indicator
     setInputValue("")
     setIsTyping(true)
 
-    setTimeout(() => {
+    try {
+      console.log('Sending request to /api/chat endpoint')
+      
+      // Make API request to our backend endpoint
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          messages: updatedHistory,
+          temperature: 0.7,
+          maxTokens: 2048
+        }),
+      })
+
+      console.log('Response status:', response.status)
+      
+      if (!response.ok) {
+        const errorData = await response.text()
+        console.error('API error response:', errorData)
+        throw new Error(`Failed to get response: ${response.status} ${errorData}`)
+      }
+
+      const data = await response.json()
+      console.log('Received successful response from API')
+      
+      // Get bot response from API
+      const botResponseContent = data.choices[0].message.content
+      
+      // Add bot response to conversation history
+      setConversationHistory([
+        ...updatedHistory,
+        { role: "assistant", content: botResponseContent }
+      ])
+
+      // Add bot response to UI
       const botResponse: Message = {
         id: (Date.now() + 1).toString(),
-        content: "I'm just a demo bot. Your message was received!",
+        content: botResponseContent,
         sender: "bot",
         timestamp: new Date(),
       }
+      
       setMessages((prev) => [...prev, botResponse])
+    } catch (error) {
+      console.error('Error communicating with Agro AI:', error)
+      
+      // Add error message to UI
+      const errorResponse: Message = {
+        id: (Date.now() + 1).toString(),
+        content: "Sorry, I'm having trouble connecting right now. Please try again later. Error: " + (error instanceof Error ? error.message : "Unknown error"),
+        sender: "bot",
+        timestamp: new Date(),
+      }
+      
+      setMessages((prev) => [...prev, errorResponse])
+    } finally {
       setIsTyping(false)
-    }, 1500)
+    }
   }
 
+  // Auto-scroll to bottom whenever messages change
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
-  }, [messages])
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" })
+    }
+  }, [messages, isTyping])
 
   return (
     <>
@@ -91,76 +507,55 @@ export default function ChatWidget() {
 
       {isOpen && (
         <div
-          className={`fixed bottom-20 right-4 z-50 ${isExpanded ? "w-[500px] h-[600px]" : "w-[380px] h-[500px]"} rounded-xl overflow-hidden shadow-xl bg-black bg-opacity-90 border border-gray-700`}
+          className={`fixed bottom-20 right-4 z-50 ${isExpanded ? "w-[500px] h-[600px]" : "w-[380px] h-[500px]"} rounded-xl overflow-hidden shadow-xl bg-black bg-opacity-90 border border-gray-700 flex flex-col`}
         >
-          <div className="flex items-center justify-between p-2 border-b border-gray-700">
-            <div className="flex items-center gap-2">
-              <Image src="images/agro.jpg" alt="Agro Bot" width={20} height={20} className="rounded-full" />
-              <span className="text-white text-sm">Agro on platform</span>
-            </div>
-            <div className="flex gap-1">
-              <button onClick={toggleExpand} className="w-5 h-5 flex items-center justify-center rounded-full bg-blue-500">
-                <Maximize2 size={12} className="text-white" />
-              </button>
-              <button onClick={toggleChat} className="w-5 h-5 flex items-center justify-center rounded-full bg-red-500">
-                <X size={12} className="text-white" />
-              </button>
+          {/* Fixed Header */}
+          <div className="flex-none">
+            <ChatHeader onClose={toggleChat} onExpand={toggleExpand} />
+          </div>
+
+          {/* Scrollable Message Area with custom scrollbar */}
+          <div className="flex-grow overflow-y-auto p-3 custom-scrollbar">
+            <style jsx>{`
+              .custom-scrollbar::-webkit-scrollbar {
+                width: 6px;
+              }
+              .custom-scrollbar::-webkit-scrollbar-track {
+                background: rgba(0, 0, 0, 0.1);
+                border-radius: 10px;
+              }
+              .custom-scrollbar::-webkit-scrollbar-thumb {
+                background: rgba(98, 185, 95, 0.5);
+                border-radius: 10px;
+                transition: background 0.3s;
+              }
+              .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+                background: rgba(98, 185, 95, 0.8);
+              }
+              /* For Firefox */
+              .custom-scrollbar {
+                scrollbar-width: thin;
+                scrollbar-color: rgba(98, 185, 95, 0.5) rgba(0, 0, 0, 0.1);
+              }
+            `}</style>
+            <div className="flex flex-col">
+              {messages.map((message) => (
+                <MessageBubble key={message.id} message={message} />
+              ))}
+              {isTyping && <TypingIndicator />}
+              <div ref={messagesEndRef} />
             </div>
           </div>
 
-          <div className="h-[85%] overflow-y-auto p-3 flex flex-col gap-4">
-            {messages.map((message) => (
-              <div key={message.id} className={`flex ${message.sender === "user" ? "justify-end" : "justify-start"}`}>
-                {message.sender === "bot" && (
-                  <div className="w-8 h-8 rounded-full bg-green-600 flex items-center justify-center text-white mr-2">
-                    A
-                  </div>
-                )}
-                <div
-                  className={`max-w-[70%] rounded-lg px-3 py-2 ${
-                    message.sender === "user" ? "bg-gray-700 text-white" : "bg-gray-600 text-white"
-                  }`}
-                >
-                  {message.content}
-                </div>
-                {message.sender === "user" && (
-                  <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center text-white ml-2">
-                    F
-                  </div>
-                )}
-              </div>
-            ))}
-            {isTyping && (
-              <div className="flex justify-start">
-                <div className="w-8 h-8 rounded-full bg-green-600 flex items-center justify-center text-white mr-2">
-                  A
-                </div>
-                <div className="bg-gray-600 text-white rounded-lg px-4 py-2">
-                  <div className="flex gap-1">
-                    <div className="w-2 h-2 bg-white rounded-full animate-bounce"></div>
-                    <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: "0.2s" }}></div>
-                    <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: "0.4s" }}></div>
-                  </div>
-                </div>
-              </div>
-            )}
-            <div ref={messagesEndRef} />
+          {/* Fixed Input Area with Quick Messages */}
+          <div className="flex-none">
+            <ChatInput 
+              value={inputValue} 
+              onChange={handleInputChange} 
+              onSubmit={handleSubmit}
+              onQuickMessageSelect={handleQuickMessageSelect}
+            />
           </div>
-
-          <form onSubmit={handleSubmit} className="border-t border-gray-700 p-2 flex items-center gap-2">
-            <div className="flex items-center gap-1 bg-black rounded-full px-3 py-1 flex-1">
-              <input
-                type="text"
-                value={inputValue}
-                onChange={handleInputChange}
-                placeholder="say hi Agro"
-                className="bg-transparent text-white w-full focus:outline-none text-sm"
-              />
-            </div>
-            <button type="submit" disabled={!inputValue.trim()} className={`p-1 rounded-full ${!inputValue.trim() ? "opacity-50" : ""}`}>
-              <Send size={18} className="text-white" />
-            </button>
-          </form>
         </div>
       )}
     </>
