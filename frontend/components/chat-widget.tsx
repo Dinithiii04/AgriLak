@@ -44,15 +44,15 @@ const MessageBubble = ({ message }: { message: Message }) => {
         .then(html => {
           // Apply custom styling to the HTML
           const styledHtml = html
-            .replace(/<pre>/g, '<pre class="bg-gray-800 p-2 rounded my-1 overflow-x-auto">')
+            .replace(/<pre>/g, '<pre class="bg-[#0f470f] p-2 rounded my-1 overflow-x-auto">')
             .replace(/<code>/g, '<code class="font-mono text-sm">')
             .replace(/<a /g, '<a class="text-blue-400 underline" target="_blank" rel="noopener noreferrer" ')
             .replace(/<ul>/g, '<ul class="list-disc pl-5 my-1">')
             .replace(/<ol>/g, '<ol class="list-decimal pl-5 my-1">')
             .replace(/<li>/g, '<li class="my-0.5">')
             .replace(/<table>/g, '<table class="border-collapse my-2">')
-            .replace(/<th>/g, '<th class="border border-gray-700 px-2 py-1">')
-            .replace(/<td>/g, '<td class="border border-gray-700 px-2 py-1">')
+            .replace(/<th>/g, '<th class="border border-[#858685] px-2 py-1">')
+            .replace(/<td>/g, '<td class="border border-[#335c33] px-2 py-1">')
           
           setHtmlContent(parse(styledHtml))
         })
@@ -63,11 +63,19 @@ const MessageBubble = ({ message }: { message: Message }) => {
     }
   }, [message.content, message.sender])
   
+
+
   return (
     <div className={`flex ${isUser ? "justify-end" : "justify-start"} mb-3`}>
       {!isUser && (
-        <div className="w-8 h-8 rounded-full bg-green-600 flex items-center justify-center text-white mr-2">
-          A
+        <div className="w-8 h-8 rounded-full overflow-hidden mr-2">
+          <Image
+            src="/images/agro.jpg"
+            alt="Agro Chat"
+            width={32}
+            height={32}
+            className="object-cover"
+          />
         </div>
       )}
       <div
@@ -78,20 +86,35 @@ const MessageBubble = ({ message }: { message: Message }) => {
         {htmlContent}
       </div>
       {isUser && (
-        <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center text-white ml-2">
-          F
+        <div className="w-8 h-8 rounded-full overflow-hidden ml-2">
+          <Image
+            src="/images/ppl.jpg"
+            alt="User"
+            width={32}
+            height={32}
+            className="object-cover"
+          />
         </div>
       )}
     </div>
-  )
+  );
+
+  
+  
 }
 
 // Typing Indicator Component
 const TypingIndicator = () => (
   <div className="flex justify-start mb-3">
-    <div className="w-8 h-8 rounded-full bg-green-600 flex items-center justify-center text-white mr-2">
-      A
-    </div>
+    <div className="w-8 h-8 rounded-full overflow-hidden mr-2">
+          <Image
+            src="/images/agro.jpg"
+            alt="Agro Chat"
+            width={32}
+            height={32}
+            className="object-cover"
+          />
+        </div>
     <div className="bg-gray-600 text-white rounded-lg px-4 py-2">
       <div className="flex gap-1">
         <div className="w-2 h-2 bg-white rounded-full animate-bounce delay-200"></div>
@@ -106,11 +129,10 @@ const TypingIndicator = () => (
 const ChatHeader = ({ onClose, onExpand }: { onClose: () => void; onExpand: () => void }) => (
   <div className="flex items-center justify-between p-2 border-b border-gray-700">
     <div className="flex items-center gap-2">
-      {/* <Image src="images/agro.jpg" alt="Agro Bot" width={20} height={20} className="rounded-full" /> */}
       <span className="text-white text-sm">Agro on platform</span>
     </div>
     <div className="flex gap-1">
-      <button onClick={onExpand} className="w-5 h-5 flex items-center justify-center rounded-full bg-blue-500" title="Expand">
+      <button onClick={onExpand} className="w-5 h-5 flex items-center justify-center rounded-full bg-[#2ca84d]" title="Expand">
         <Maximize2 size={12} className="text-white" />
       </button>
       <button onClick={onClose} className="w-5 h-5 flex items-center justify-center rounded-full bg-red-500" title="Close">
@@ -286,7 +308,7 @@ export default function ChatWidget() {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
-      content: "Hello, I'm Agro! I can help you with agricultural questions and advice. How can I assist you today?",
+      content: "Hello, I'm Agro! I can help you with paddy farming questions and advice. How can I assist you today?",
       sender: "bot",
       timestamp: new Date(),
     }
@@ -299,7 +321,69 @@ export default function ChatWidget() {
   const [conversationHistory, setConversationHistory] = useState([
     {
       role: "system",
-      content: "You are Agro, an agricultural assistant specialized in helping farmers with crop management, disease detection, and agricultural best practices. Provide helpful, accurate, and concise information. Focus on being practical and actionable in your advice."
+      content: `You are Agro, a kind and helpful AI assistant designed exclusively to support people with paddy farming. Your goal is to provide clear, simple, and friendly guidance to farmers while maintaining strict adherence to paddy farming topics.  
+
+## Role & Responsibilities  
+- You provide assistance strictly related to paddy farming. If a user asks about unrelated topics (e.g., mango trees, general agriculture, history, or celebrities), respond with:  
+  *'Sorry, Agro can only help with paddy farming.'*  
+- You listen attentively, understand user needs, and respond in a structured, easy-to-understand manner.  
+- You always engage in step-by-step conversations instead of dumping large amounts of information at once.  
+- You format responses neatly using short paragraphs, line breaks, bullet points, and numbered lists for clarity.  
+
+## Communication Guidelines  
+- Always be **friendly, patient, and helpful**.  
+- Use **short, clear, and structured responses**. 
+- Use **emojis to make the conversation friendly**. 
+- If a question is too complex, **break it into smaller steps**.  
+- If a user asks for **example input values**, respond with:  
+  *'Sorry, Agro can't provide example inputs. Let me know if you need help with something else!'*  
+- If a user introduces themselves (e.g., 'My name is Dinithi'), warmly personalize the greeting:  
+  *'Hi Dinithi! How can I help you today?'*  
+
+## Handling Image & Voice Input  
+- If a user asks to upload an image or use voice input, respond with:  
+  *'Sorry, Agro can’t analyze images or voice input. But you can describe the issue, and I'll try my best to help!'*  
+
+## Recognizing the Web App & Team Details  
+If a user asks about the web application, respond with:  
+*"This web project was created by Dinithi, Dilshan, Ranudee, and Binara. We are Group 2 from the Artificial Intelligence and Data Science program at Informatics Institute of Technology."*  
+
+If a user asks, *'What are the features of this app?'*, respond with:  
+*"This app includes four main features:  
+- **Yield Prediction**  
+- **Pest & Disease Detection**  
+- **Fertilizer Recommendation**  
+- **Irrigation Optimization**  
+Would you like Agro to explain any of these features?"*  
+
+## Interactive Response Flow  
+Each feature is structured as a step-by-step conversation. Example for Fertilizer Recommendation:  
+
+**User:** "Tell me about fertilizer recommendation."  
+**Bot:** "This feature helps you find the best fertilizer for your paddy field. Do you want to know how it works?"  
+**User:** "Yes, how does it work?"  
+**Bot:** "You enter details like soil conditions, and the system suggests the right fertilizer. Would you like tips on how to use fertilizers properly?"  
+
+## Explaining the Web Application Flow  
+If a user asks, *'How does the system work?'*, respond with:  
+*"Here's how the system works, step by step:  
+1. **Login & Authentication** – The user logs into the system and gets authenticated.  
+2. **Dashboard Page** – After login, the user is redirected to the dashboard.  
+3. **Sidebar Navigation** – The dashboard has a sidebar with options for each feature.  
+4. **Using Features** – The user selects a feature, enters input data, and gets predictions.  
+5. **User Profile Page** – The user can see past fertilizer predictions in their profile.  
+6. **Logout** – The user can log out anytime from the profile page.  
+Let Agro know if you need more details!"*  
+
+## Constraints & Fallback Responses  
+- **No Data Divulge**: Never mention that you have access to training data explicitly.  
+- **Maintaining Focus**: If a user attempts to divert you to unrelated topics, politely redirect them back to paddy farming.  
+- **Exclusive Reliance on Training Data**: You must rely solely on the provided knowledge. If a question is outside this scope, say:  
+  *'Sorry, Agro don’t have information on that. I can only help with paddy farming.'*  
+- **Restrictive Role Focus**: Do not answer questions or perform tasks unrelated to paddy farming.  
+
+You are now ready to assist farmers with all their paddy farming inquiries!`
+
     },
     {
       role: "assistant",
