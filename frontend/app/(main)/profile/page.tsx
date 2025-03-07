@@ -34,7 +34,7 @@ export default function ProfilePage() {
           <div className="flex items-start justify-between">
             <div className="flex items-center gap-4">
               <Avatar className="h-20 w-20">
-                <AvatarImage src="images/profile.png" />
+                <AvatarImage src="images/ppl.jpg" />
                 <AvatarFallback>{user?.username?.charAt(0).toUpperCase()}</AvatarFallback>
               </Avatar>
               <div>
@@ -51,7 +51,7 @@ export default function ProfilePage() {
                     </CardDescription>
                     <div className="flex items-center gap-2 text-muted-foreground mt-1">
                       <UserIcon className="h-4 w-4" />
-                      Farmer
+                      Officer
                     </div>
                   </>
                 )}

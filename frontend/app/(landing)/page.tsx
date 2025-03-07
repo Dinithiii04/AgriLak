@@ -2,12 +2,9 @@
 import { Hero } from '@/components/hero';
 import { Services } from '@/components/services';
 import { Stats } from '@/components/stats';
-import { Categories } from '@/components/categories';
-import { AboutGardening } from '@/components/about-gardening';
 import { CareServices } from '@/components/care-services';
-import { AboutSection } from '@/components/gardening-services';
+import { FaQSection } from '@/components/faq';
 import { ExpertTeam } from '@/components/expert-team';
-import { BlogSection } from '@/components/blog-section';
 import { useEffect, useState } from 'react';
 import GifLoader from '@/components/loader';
 import ChatWidget from '@/components/chat-widget';
@@ -33,7 +30,7 @@ export default function Home() {  const [isLoading, setIsLoading] = useState(tru
       <Stats />
       <CareServices />
       <ChatWidget/>
-      <AboutSection />
+      <FaQSection/>
       <ExpertTeam />
     </div>
   );
