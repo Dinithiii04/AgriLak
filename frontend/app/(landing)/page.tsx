@@ -3,7 +3,7 @@ import { Hero } from '@/components/hero';
 import { Services } from '@/components/services';
 import { Stats } from '@/components/stats';
 import { CareServices } from '@/components/care-services';
-import { AboutSection } from '@/components/gardening-services';
+import { FaQSection } from '@/components/faq';
 import { ExpertTeam } from '@/components/expert-team';
 import { useEffect, useState } from 'react';
 import GifLoader from '@/components/loader';
@@ -30,7 +30,7 @@ export default function Home() {  const [isLoading, setIsLoading] = useState(tru
       <Stats />
       <CareServices />
       <ChatWidget/>
-      <AboutSection />
+      <FaQSection/>
       <ExpertTeam />
     </div>
   );

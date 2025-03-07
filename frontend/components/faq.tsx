@@ -1,8 +1,8 @@
 import Image from "next/image";
-import { SetStateAction, useState } from "react";
+import { useState } from "react";
 import { Leaf, Plus, Minus } from "lucide-react";
 
-export function AboutSection() {
+export function FaQSection() {
   const faqs = [
     {
       question: "What is AI-Driven Smart Paddy Farming?",
@@ -24,11 +24,9 @@ export function AboutSection() {
 
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
-const toggleFAQ = (index: number) => {
-  setOpenIndex(openIndex === index ? null : index);
-};
-
-  
+  const toggleFAQ = (index: number) => {
+    setOpenIndex(openIndex === index ? null : index);
+  };
 
   return (
     <section className="py-16 bg-white">
@@ -59,20 +57,30 @@ const toggleFAQ = (index: number) => {
 
           {/* FAQ List */}
           <div className="space-y-4">
-            {faqs.map((faq, index) => (
-              <div key={index} className="border rounded-lg overflow-hidden">
-                <button
-                  className="w-full flex justify-between items-center bg-green-900 text-white font-semibold p-4"
-                  onClick={() => toggleFAQ(index)}
+            {faqs.map((faq, index) => {
+              const isOpen = openIndex === index;
+              return (
+                <div
+                  key={index}
+                  className={`border border-green-900 rounded-lg overflow-hidden transition-all duration-300 ${
+                    isOpen ? "bg-green-900 text-white" : "text-green-900"
+                  }`}
                 >
-                  <span>{faq.question}</span>
-                  {openIndex === index ? <Minus /> : <Plus />}
-                </button>
-                {openIndex === index && (
-                  <div className="p-4 bg-gray-100 text-gray-800">{faq.answer}</div>
-                )}
-              </div>
-            ))}
+                  <button
+                    className="w-full flex justify-between items-center font-semibold p-4"
+                    onClick={() => toggleFAQ(index)}
+                  >
+                    <span>{faq.question}</span>
+                    {isOpen ? <Minus /> : <Plus />}
+                  </button>
+                  {isOpen && (
+                    <div className="p-4 bg-white text-green-900 border-t border-green-900">
+                      {faq.answer}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>
