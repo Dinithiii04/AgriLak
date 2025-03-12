@@ -5,6 +5,7 @@ import { ThemeProvider } from '@/components/theme-provider'
 import { Sidebar } from '@/components/sidebar'
 import { AuthProvider, useAuth } from '@/context/AuthContext'
 
+
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import GifLoader from '@/components/loader'
