@@ -111,15 +111,15 @@ export default function ContactForm() {
         </div>
 
         <div className="mt-12 w-full h-[400px] rounded-md overflow-hidden shadow-md">
-          <iframe
-            src="https://www.google.com/maps/place/Informatics+Institute+of+Technology+(IIT)/@6.8652715,79.8549796,17z/data=!3m1!4b1!4m6!3m5!1s0x3ae25ba4e617b3d9:0xd5a3b0418f1cf497!8m2!3d6.8652715!4d79.8598505!16s%2Fm%2F03hmtb0?hl=en&entry=ttu&g_ep=EgoyMDI1MDMxMS4wIKXMDSoASAFQAw%3D%3D"
-            width="100%"
-            height="100%"
-            style={{ border: 0 }}
-            allowFullScreen
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-          ></iframe>
+        <iframe
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d63316.82736592769!2d79.82177092655326!3d6.927076871872128!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ae2591f5b36a21f%3A0x9e7a6a96fba8b74!2s10%20Trelawney%20Pl%2C%20Colombo%2000400!5e0!3m2!1sen!2slk!4v1710368248573!5m2!1sen!2slk"
+        width="100%"
+        height="100%"
+        style={{ border: 0 }}
+        allowFullScreen
+        loading="lazy"
+        referrerPolicy="no-referrer-when-downgrade"
+        />
         </div>
       </div>
     </section>
