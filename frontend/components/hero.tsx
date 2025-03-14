@@ -104,9 +104,8 @@ export function Hero() {
           <p className="text-gray-800 font-semibold mt-4">📌 Link to Research & Documentation:</p>
           <p className="text-gray-800">For more details, visit:</p>
           <ul className="list-disc pl-5 text-gray-800">
-            <li><strong>GitHub Repository:</strong> [Your GitHub Link]</li>
+            <li><strong>GitHub Repository:</strong>https://github.com/Dinithiii04/AgriLak</li>
             <li><strong>Research Paper/Whitepaper:</strong> [Your Research Link]</li>
-            <li><strong>API Documentation:</strong> [Your API Documentation Link]</li>
           </ul>
           </DialogContent>
         </Dialog>

@@ -20,8 +20,8 @@ const data = [
 
 const alerts = [
   {
-    title: "Disease Risk Alert",
-    description: "High risk of blast disease in Field A-12",
+    title: " Nitrogen Deficiency Alert ",
+    description: "Low nitrogen! Apply urea or ammonium sulfate for better growth.",
     icon: AlertTriangle,
   },
   {
@@ -30,8 +30,8 @@ const alerts = [
     icon: Droplets,
   },
   {
-    title: "Optimal Harvest Time",
-    description: "Field C-3 ready for harvest in 5 days",
+    title: "Disease Risk Alert",
+    description: "High risk of blast disease in Field A-12",
     icon: Plant,
   },
 ]
