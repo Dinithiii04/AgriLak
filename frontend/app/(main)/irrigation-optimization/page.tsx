@@ -23,16 +23,10 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { ArrowLeft } from "lucide-react";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const formSchema = z.object({
-  T2M: z.string().min(1, "Required"),
-  T2M_RANGE: z.string().min(1, "Required"),
-  T2MDEW: z.string().min(1, "Required"),
-  RH2M: z.string().min(1, "Required"),
-  soil_moisture: z.string().min(1, "Required"),
-  Rainfall: z.string().min(1, "Required"),
-  Month: z.string().min(1, "Required"),
+  date: z.string().min(1, "Required"),  // Date field
+  Rainfall: z.string().min(1, "Required"),  // Rainfall field
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -44,17 +38,6 @@ interface PredictionResult {
   details: string;
 }
 
-// Feature labels mapping
-const featureLabels: Record<keyof FormValues, string> = {
-  T2M: "Temperature at 2M (°C)",
-  T2M_RANGE: "Temperature Range (°C)",
-  T2MDEW: "Dew Point Temperature (°C)",
-  RH2M: "Relative Humidity at 2M (%)",
-  soil_moisture: "Soil Moisture (%)",
-  Rainfall: "Rainfall (mm)",
-  Month: "Month",
-};
-
 export default function IrrigationOptimizationPage() {
   const [result, setResult] = useState<PredictionResult | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -63,13 +46,8 @@ export default function IrrigationOptimizationPage() {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      T2M: "",
-      T2M_RANGE: "",
-      T2MDEW: "",
-      RH2M: "",
-      soil_moisture: "",
+      date: "",
       Rainfall: "",
-      Month: "",
     },
   });
 
@@ -80,13 +58,8 @@ export default function IrrigationOptimizationPage() {
 
     try {
       const requestData = {
-        T2M: parseFloat(values.T2M),
-        T2M_RANGE: parseFloat(values.T2M_RANGE),
-        T2MDEW: parseFloat(values.T2MDEW),
-        RH2M: parseFloat(values.RH2M),
-        soil_moisture: parseFloat(values.soil_moisture),
+        date: values.date,
         Rainfall: parseFloat(values.Rainfall),
-        Month: values.Month,
       };
 
       const response = await axiosInstance.post("/irrigation/predict", requestData);
@@ -143,71 +116,42 @@ export default function IrrigationOptimizationPage() {
   return (
     <div className="container max-w-[800px] py-12">
       <h1 className="text-3xl font-bold">Irrigation Optimization</h1>
-      <p className="text-muted-foreground mt-2">Enter environmental and soil parameters to optimize irrigation.</p>
+      <p className="text-muted-foreground mt-2">Enter date and rainfall to optimize irrigation.</p>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 mt-8">
           <Card>
             <CardHeader>
-              <CardTitle>Environmental & Soil Parameters</CardTitle>
+              <CardTitle>Input Parameters</CardTitle>
             </CardHeader>
-            <CardContent className="grid gap-6 grid-cols-2">
-              {Object.keys(formSchema.shape).map((key) =>
-                key === "Month" ? (
-                  <FormField
-                    key={key}
-                    control={form.control}
-                    name="Month"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>{featureLabels["Month"]}</FormLabel>
-                        <FormControl>
-                          <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select a month" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {[
-                                "January",
-                                "February",
-                                "March",
-                                "April",
-                                "May",
-                                "June",
-                                "July",
-                                "August",
-                                "September",
-                                "October",
-                                "November",
-                                "December",
-                              ].map((month) => (
-                                <SelectItem key={month} value={month}>
-                                  {month}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                ) : (
-                  <FormField
-                    key={key}
-                    control={form.control}
-                    name={key as keyof FormValues}
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>{featureLabels[key as keyof FormValues]}</FormLabel>
-                        <FormControl>
-                          <Input placeholder={`Enter ${featureLabels[key as keyof FormValues]}`} {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                )
-              )}
+            <CardContent>
+              {/* Date Field */}
+              <FormField
+                control={form.control}
+                name="date"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Date</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter date (YYYYMMDD)" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              {/* Rainfall Field */}
+              <FormField
+                control={form.control}
+                name="Rainfall"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Rainfall (mm)</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter Rainfall" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </CardContent>
           </Card>
           <Button type="submit" className="w-full" disabled={isLoading}>
