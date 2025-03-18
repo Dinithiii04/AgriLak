@@ -25,8 +25,8 @@ import {
 import { ArrowLeft } from "lucide-react";
 
 const formSchema = z.object({
-  date: z.string().min(1, "Required"),  // Date field
-  Rainfall: z.string().min(1, "Required"),  // Rainfall field
+  date: z.string().min(1, "Required"),  
+  Rainfall: z.string().min(1, "Required"), 
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -124,7 +124,7 @@ export default function IrrigationOptimizationPage() {
               <CardTitle>Input Parameters</CardTitle>
             </CardHeader>
             <CardContent>
-              {/* Date Field */}
+            
               <FormField
                 control={form.control}
                 name="date"
@@ -138,7 +138,7 @@ export default function IrrigationOptimizationPage() {
                   </FormItem>
                 )}
               />
-              {/* Rainfall Field */}
+              
               <FormField
                 control={form.control}
                 name="Rainfall"

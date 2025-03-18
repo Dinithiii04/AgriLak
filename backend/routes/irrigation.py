@@ -6,6 +6,8 @@ import joblib
 import numpy as np
 import pandas as pd
 import requests
+from flask_jwt_extended import jwt_required, get_jwt_identity
+from db.irrgation_db import Irrigation
 
 irrigation_bp = Blueprint('irrigation', __name__)
 
@@ -44,9 +46,10 @@ month_mapping = {
 
 
 @irrigation_bp.route('/predict', methods=['POST'])
-
+@jwt_required()
 def pred():
     try:
+        user_id = get_jwt_identity()
         data = request.get_json()
         date = data.get('date')
         Rainfall = float(data.get('Rainfall', 0))
@@ -124,6 +127,21 @@ def pred():
                 result="Do Not Irrigate"
         else:
             result = "Uncertain Decision"
+
+        prediction_result={
+            "user_id": user_id,
+            "date": date,
+            "T2M": T2M,
+            "T2M_RANGE": T2M_RANGE,
+            "RH2M": RH2M,
+            "GWETTOP": GWETTOP,
+            "Rainfall": Rainfall,
+            "T2MDEW": T2MDEW,
+            "result": result,
+            "confidence": round(confidence*100, 2)
+        }
+        Irrigation.saved_data(prediction_result,user_id)
+
 
         return jsonify({
             'prediction': result,
