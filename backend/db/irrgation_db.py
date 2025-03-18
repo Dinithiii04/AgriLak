@@ -20,7 +20,7 @@ class Irrigation:
         return mongo.db.predictions.insert_one(saving_data)
 
     @staticmethod
-    def get_user_predictions(user_id):
+    def get_user_irrigation_predictions(user_id):
 
         return list(mongo.db.predictions.find(
             {"user_id": user_id},
