@@ -6,6 +6,7 @@ interface UserProfile {
   email: string;
   created_at: string;
   predictions: Prediction[];
+  irrigationHistory: IrrigationHistory[];
 }
 
 interface Prediction {
@@ -18,6 +19,18 @@ interface Prediction {
   recommended_fertilizer: string;
   created_at: string | null;
 }
+interface IrrigationHistory {
+  Input_date: string ; 
+  Temperature: string; 
+  Temperature_Range: string ; 
+  Relative_humidity: string ; 
+  Soil_moisture: string ; 
+  Rainfall: string ; 
+  Dew_point: string ; 
+  Recommended_Irrigation_plan: string ; 
+  Confidence: number; 
+}
+
 
 interface UseUserProfileOptions {
   lazy?: boolean;

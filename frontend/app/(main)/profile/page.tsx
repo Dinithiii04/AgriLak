@@ -21,10 +21,19 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Edit, LogOut, Mail, User as UserIcon } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
+import { JSXElementConstructor, Key, PromiseLikeOfReactNode, ReactElement, ReactNode, ReactPortal, useState } from "react";
 
 export default function ProfilePage() {
   const { user, isLoading, error } = useUserProfile();
-  const { logout } = useAuth()
+  const { logout } = useAuth();
+
+  // State to manage which table is displayed
+  const [activeTable, setActiveTable] = useState<'irrigation' | 'fertilizer'>('fertilizer');
+
+  // Switch between Irrigation History and Fertilizer Recommendation History
+  const handleTableChange = (table: 'irrigation' | 'fertilizer') => {
+    setActiveTable(table);
+  };
 
   return (
     <div className="container max-w-[1000px] py-8 space-y-8">
@@ -57,7 +66,7 @@ export default function ProfilePage() {
                 )}
               </div>
             </div>
-            <Button variant="outline" size="sm" className="flex items-center gap-2 " onClick={logout}>
+            <Button variant="outline" size="sm" className="flex items-center gap-2" onClick={logout}>
               <LogOut className="h-4 w-4" />
               logout
             </Button>
@@ -65,59 +74,125 @@ export default function ProfilePage() {
         </CardHeader>
       </Card>
 
-      {/* Prediction History Card */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Prediction History</CardTitle>
-          <CardDescription>
-            Your recent fertilizer predictions and recommendations
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          {isLoading ? (
-            <p className="text-center text-muted-foreground">Loading prediction history...</p>
-          ) : error ? (
-            <p className="text-center text-red-500">{error}</p>
-          ) : !user?.predictions || user.predictions.length === 0 ? (
-            <div className="flex justify-center">
-              <Badge variant="outline" className="text-muted-foreground">
-                No prediction history found
-              </Badge>
-            </div>
-          ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Date</TableHead>
-                  <TableHead>Nitrogen</TableHead>
-                  <TableHead>Phosphorus</TableHead>
-                  <TableHead>Potassium</TableHead>
-                  <TableHead>pH</TableHead>
-                  <TableHead>Rainfall</TableHead>
-                  <TableHead>Temperature</TableHead>
-                  <TableHead>Recommendation</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {user.predictions.map((prediction, index) => (
-                  <TableRow key={index}>
-                    <TableCell>{prediction.created_at ? new Date(prediction.created_at).toLocaleDateString() : "N/A"}</TableCell>
-                    <TableCell>{prediction.Nitrogen}</TableCell>
-                    <TableCell>{prediction.Phosphorus}</TableCell>
-                    <TableCell>{prediction.Potassium}</TableCell>
-                    <TableCell>{prediction.pH}</TableCell>
-                    <TableCell>{prediction.Rainfall}</TableCell>
-                    <TableCell>{prediction.Temperature}</TableCell>
-                    <TableCell className="font-medium">
-                      {prediction.recommended_fertilizer}
-                    </TableCell>
+      {/* Button to switch between Irrigation and Fertilizer Recommendations */}
+      <div className="flex gap-4">
+        <Button variant={activeTable === 'irrigation' ? 'default' : 'outline'} onClick={() => handleTableChange('irrigation')}>
+          Irrigation History
+        </Button>
+        <Button variant={activeTable === 'fertilizer' ? 'default' : 'outline'} onClick={() => handleTableChange('fertilizer')}>
+          Fertilizer Recommendation History
+        </Button>
+      </div>
+
+      {/* Table Card for Prediction History (Fertilizer Recommendation) */}
+      {activeTable === 'fertilizer' && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Fertilizer Recommendation History</CardTitle>
+            <CardDescription>
+              Your recent fertilizer predictions and recommendations
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {isLoading ? (
+              <p className="text-center text-muted-foreground">Loading prediction history...</p>
+            ) : error ? (
+              <p className="text-center text-red-500">{error}</p>
+            ) : !user?.predictions || user.predictions.length === 0 ? (
+              <div className="flex justify-center">
+                <Badge variant="outline" className="text-muted-foreground">
+                  No prediction history found
+                </Badge>
+              </div>
+            ) : (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Date</TableHead>
+                    <TableHead>Nitrogen</TableHead>
+                    <TableHead>Phosphorus</TableHead>
+                    <TableHead>Potassium</TableHead>
+                    <TableHead>pH</TableHead>
+                    <TableHead>Rainfall</TableHead>
+                    <TableHead>Temperature</TableHead>
+                    <TableHead>Recommendation</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          )}
-        </CardContent>
-      </Card>
+                </TableHeader>
+                <TableBody>
+                  {user.predictions.map((prediction, index) => (
+                    <TableRow key={index}>
+                      <TableCell>{prediction.created_at ? new Date(prediction.created_at).toLocaleDateString() : "N/A"}</TableCell>
+                      <TableCell>{prediction.Nitrogen}</TableCell>
+                      <TableCell>{prediction.Phosphorus}</TableCell>
+                      <TableCell>{prediction.Potassium}</TableCell>
+                      <TableCell>{prediction.pH}</TableCell>
+                      <TableCell>{prediction.Rainfall}</TableCell>
+                      <TableCell>{prediction.Temperature}</TableCell>
+                      <TableCell className="font-medium">
+                        {prediction.recommended_fertilizer}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            )}
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Table Card for Irrigation History */}
+      {activeTable === 'irrigation' && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Irrigation History</CardTitle>
+            <CardDescription>
+              Your recent irrigation activities and recommendations
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {isLoading ? (
+              <p className="text-center text-muted-foreground">Loading irrigation history...</p>
+            ) : error ? (
+              <p className="text-center text-red-500">{error}</p>
+            ) : !user?.irrigationHistory || user.irrigationHistory.length === 0 ? (
+              <div className="flex justify-center">
+                <Badge variant="outline" className="text-muted-foreground">
+                  No irrigation history found
+                </Badge>
+              </div>
+            ) : (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Date</TableHead>
+                    <TableHead>Temperature</TableHead>
+                    <TableHead>Relative Humidity</TableHead>
+                    <TableHead>Soil Moisture</TableHead>
+                    <TableHead>Rainfall</TableHead>
+                    <TableHead>Dew Point</TableHead>
+                    <TableHead>Recommended Irrigation Plan</TableHead>
+                    <TableHead>Confidence</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {user.irrigationHistory.map((irrigationHistory,index) => (
+                    <TableRow key={index}>
+                      <TableCell>{irrigationHistory.Input_date}</TableCell>
+                      <TableCell>{irrigationHistory.Temperature}</TableCell>
+                      <TableCell>{irrigationHistory.Relative_humidity}</TableCell>
+                      <TableCell>{irrigationHistory.Soil_moisture}</TableCell>
+                      <TableCell>{irrigationHistory.Rainfall}</TableCell>
+                      <TableCell>{irrigationHistory.Dew_point}</TableCell>
+                      <TableCell>{irrigationHistory.Recommended_Irrigation_plan}</TableCell>
+                      <TableCell>{irrigationHistory.Confidence}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            )}
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }

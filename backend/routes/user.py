@@ -24,13 +24,17 @@ def get_profile():
     # Retrieve user's past fertilizer predictions
     predictions = FertilizerModel.get_user_predictions(user_id)
 
-    irrigation_prediction=Irrigation.get_user_irrigation_predictions(user_id)
+    irrigationHistory=Irrigation.get_user_irrigation_predictions(user_id)
+
+    
 
     user_data = {
         'username': user.get('username'),
         'email': user.get('email'),
         'created_at': user.get('created_at'),
-        'predictions': predictions  # Include user's prediction history
+        'predictions': predictions,  # Include user's prediction history
+        'irrigation_prediction':irrigationHistory
     }
+
 
     return jsonify({'profile': user_data}), 200
