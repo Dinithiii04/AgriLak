@@ -36,7 +36,7 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="container max-w-[1000px] py-8 space-y-8">
+    <div className="container max-w-[855px] py-8 space-y-8">
       {/* User Profile Card */}
       <Card>
         <CardHeader>
@@ -86,7 +86,7 @@ export default function ProfilePage() {
 
       {/* Table Card for Prediction History (Fertilizer Recommendation) */}
       {activeTable === 'fertilizer' && (
-        <Card>
+        <Card className="w-[855px]">
           <CardHeader>
             <CardTitle>Fertilizer Recommendation History</CardTitle>
             <CardDescription>
@@ -172,7 +172,7 @@ export default function ProfilePage() {
                     <TableHead>Rainfall</TableHead>
                     <TableHead>Dew Point</TableHead>
                     <TableHead>Recommended Irrigation Plan</TableHead>
-                    <TableHead>Confidence</TableHead>
+                    
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -186,7 +186,6 @@ export default function ProfilePage() {
                       <TableCell>{irrigationHistory.rainfall}</TableCell>
                       <TableCell>{irrigationHistory.dewPoint}</TableCell>
                       <TableCell>{irrigationHistory.recommendedIrrigationPlan}</TableCell>
-                      <TableCell>{irrigationHistory.confidence}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

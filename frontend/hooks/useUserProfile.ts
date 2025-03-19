@@ -28,8 +28,7 @@ interface IrrigationHistory {
   soilMoisture: number; 
   rainfall: number; 
   dewPoint: number; 
-  recommendedIrrigationPlan: string; 
-  confidence: number; 
+  recommendedIrrigationPlan: string;  
 }
 
 interface UseUserProfileOptions {
@@ -59,7 +58,7 @@ export const useUserProfile = (options?: UseUserProfileOptions) => {
             rainfall: entry.Rainfall,
             dewPoint: entry.Dew_point,
             recommendedIrrigationPlan: entry.Recommended_Irrigation_plan,
-            confidence: entry.Confidence,
+        
           }))
         : [];
 
