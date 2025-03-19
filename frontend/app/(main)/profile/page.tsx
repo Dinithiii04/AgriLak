@@ -36,12 +36,12 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="container max-w-[855px] py-8 space-y-8">
+    <div className="container max-w-[1000px] py-8 space-y-8">
       {/* User Profile Card */}
       <Card>
         <CardHeader>
           <div className="flex items-start justify-between">
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-8">
               <Avatar className="h-20 w-20">
                 <AvatarImage src="images/ppl.jpg" />
                 <AvatarFallback>{user?.username?.charAt(0).toUpperCase()}</AvatarFallback>
@@ -67,7 +67,7 @@ export default function ProfilePage() {
               </div>
             </div>
             <Button variant="outline" size="sm" className="flex items-center gap-2" onClick={logout}>
-              <LogOut className="h-4 w-4" />
+              <LogOut className="h-6 w-6" />
               logout
             </Button>
           </div>
@@ -76,17 +76,17 @@ export default function ProfilePage() {
 
       {/* Button to switch between Irrigation and Fertilizer Recommendations */}
       <div className="flex gap-4">
-        <Button variant={activeTable === 'irrigation' ? 'default' : 'outline'} onClick={() => handleTableChange('irrigation')}>
-          Irrigation History
+      <Button variant={activeTable === 'fertilizer' ? 'default' : 'outline'} onClick={() => handleTableChange('fertilizer')}>
+          Fertilizer Recommendation
         </Button>
-        <Button variant={activeTable === 'fertilizer' ? 'default' : 'outline'} onClick={() => handleTableChange('fertilizer')}>
-          Fertilizer Recommendation History
+        <Button variant={activeTable === 'irrigation' ? 'default' : 'outline'} onClick={() => handleTableChange('irrigation')}>
+          Irrigation
         </Button>
       </div>
 
       {/* Table Card for Prediction History (Fertilizer Recommendation) */}
       {activeTable === 'fertilizer' && (
-        <Card className="w-[855px]">
+        <Card className="w-[1000px]">
           <CardHeader>
             <CardTitle>Fertilizer Recommendation History</CardTitle>
             <CardDescription>
@@ -164,7 +164,7 @@ export default function ProfilePage() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Date</TableHead>
+                    <TableHead className="px-4 whitespace-nowrap">Date</TableHead>
                     <TableHead>Temperature Range</TableHead>
                     <TableHead>Temperature</TableHead>
                     <TableHead>Relative Humidity</TableHead>
@@ -178,7 +178,7 @@ export default function ProfilePage() {
                 <TableBody>
                   {user.irrigationHistory.map((irrigationHistory,index) => (
                     <TableRow key={index}>
-                      <TableCell>{irrigationHistory.inputDate}</TableCell>
+                      <TableCell className="px-4 whitespace-nowrap">{irrigationHistory.inputDate}</TableCell>
                       <TableCell>{irrigationHistory.temperature}</TableCell>
                       <TableCell>{irrigationHistory.temperatureRange}</TableCell>
                       <TableCell>{irrigationHistory.relativeHumidity}</TableCell>

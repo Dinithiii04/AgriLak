@@ -123,7 +123,7 @@ export default function IrrigationOptimizationPage() {
             <CardHeader>
               <CardTitle>Input Parameters</CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="space-y-6">
             
               <FormField
                 control={form.control}
