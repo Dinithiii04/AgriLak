@@ -165,6 +165,7 @@ export default function ProfilePage() {
                 <TableHeader>
                   <TableRow>
                     <TableHead>Date</TableHead>
+                    <TableHead>Temperature Range</TableHead>
                     <TableHead>Temperature</TableHead>
                     <TableHead>Relative Humidity</TableHead>
                     <TableHead>Soil Moisture</TableHead>
@@ -177,14 +178,15 @@ export default function ProfilePage() {
                 <TableBody>
                   {user.irrigationHistory.map((irrigationHistory,index) => (
                     <TableRow key={index}>
-                      <TableCell>{irrigationHistory.Input_date}</TableCell>
-                      <TableCell>{irrigationHistory.Temperature}</TableCell>
-                      <TableCell>{irrigationHistory.Relative_humidity}</TableCell>
-                      <TableCell>{irrigationHistory.Soil_moisture}</TableCell>
-                      <TableCell>{irrigationHistory.Rainfall}</TableCell>
-                      <TableCell>{irrigationHistory.Dew_point}</TableCell>
-                      <TableCell>{irrigationHistory.Recommended_Irrigation_plan}</TableCell>
-                      <TableCell>{irrigationHistory.Confidence}</TableCell>
+                      <TableCell>{irrigationHistory.inputDate}</TableCell>
+                      <TableCell>{irrigationHistory.temperature}</TableCell>
+                      <TableCell>{irrigationHistory.temperatureRange}</TableCell>
+                      <TableCell>{irrigationHistory.relativeHumidity}</TableCell>
+                      <TableCell>{irrigationHistory.soilMoisture}</TableCell>
+                      <TableCell>{irrigationHistory.rainfall}</TableCell>
+                      <TableCell>{irrigationHistory.dewPoint}</TableCell>
+                      <TableCell>{irrigationHistory.recommendedIrrigationPlan}</TableCell>
+                      <TableCell>{irrigationHistory.confidence}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

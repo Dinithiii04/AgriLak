@@ -1,5 +1,5 @@
 from database import mongo
-from datetime import datetime
+
 
 class Irrigation:
     @staticmethod
@@ -21,8 +21,10 @@ class Irrigation:
 
     @staticmethod
     def get_user_irrigation_predictions(user_id):
-
-        return list(mongo.db.irrigation_predictions.find(
-            {"user_id": user_id},
+        result = list(mongo.db.irrigation_predictions.find(
+            {"user_id": user_id},  # Convert to ObjectId
             {'_id': 0}
         ))
+
+        return result
+
