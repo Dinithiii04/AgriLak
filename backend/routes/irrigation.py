@@ -1,8 +1,13 @@
+from datetime import datetime
+
 from flask import Blueprint, request, jsonify
 import pickle
 import joblib
 import numpy as np
 import pandas as pd
+import requests
+from flask_jwt_extended import jwt_required, get_jwt_identity
+from db.irrgation_db import Irrigation
 
 irrigation_bp = Blueprint('irrigation', __name__)
 
@@ -41,16 +46,55 @@ month_mapping = {
 
 
 @irrigation_bp.route('/predict', methods=['POST'])
+@jwt_required()
 def pred():
     try:
+        user_id = get_jwt_identity()
         data = request.get_json()
-        T2M = float(data.get('T2M', 0))
-        T2M_RANGE = float(data.get('T2M_RANGE', 0))
-        T2MDEW = float(data.get('T2MDEW', 0))
-        RH2M = float(data.get('RH2M', 0))
-        GWETTOP = float(data.get('soil_moisture', 0))
+        date = data.get('date')
         Rainfall = float(data.get('Rainfall', 0))
-        Month = data.get('Month', "January")
+
+        date_obj = datetime.strptime(date, '%Y-%m-%d')
+        Month = date_obj.month
+
+        structured_date=date.replace("-","")
+        print(structured_date)
+
+        url = "https://power.larc.nasa.gov/api/temporal/daily/point"
+
+
+        params = {
+            "parameters": "T2M,RH2M,T2MDEW,T2M_RANGE,GWETTOP",
+            "community": "AG",
+            "longitude": 80.7718,
+            "latitude": 7.8731,
+            "start":structured_date,
+            "end": structured_date,
+            "format": "JSON",
+        }
+
+        response = requests.get(url, params=params)
+
+        print("Response Status Code:", response.status_code)
+        try:
+            json_data = response.json()
+            env_data = json_data["properties"]
+            variable_data = env_data.values()
+            val_dict = {}
+            for variable in variable_data:
+                for env in ['T2M', 'RH2M', 'T2M_RANGE', 'GWETTOP', 'T2MDEW']:
+                    feature = variable[env]
+                    value = feature[structured_date]
+                    val_dict[env] = value
+
+            T2M=val_dict['T2M']
+            RH2M=val_dict['RH2M']
+            T2M_RANGE=val_dict['T2M_RANGE']
+            GWETTOP=val_dict['GWETTOP']
+            T2MDEW=val_dict['T2MDEW']
+
+        except requests.exceptions.JSONDecodeError:
+            print("Error: Response is not valid JSON")
 
         if isinstance(Month, str):
             Month = month_mapping.get(Month, 1)
@@ -83,6 +127,21 @@ def pred():
                 result="Do Not Irrigate"
         else:
             result = "Uncertain Decision"
+
+        prediction_result={
+            "user_id": user_id,
+            "date": date,
+            "T2M": T2M,
+            "T2M_RANGE": T2M_RANGE,
+            "RH2M": RH2M,
+            "GWETTOP": GWETTOP,
+            "Rainfall": Rainfall,
+            "T2MDEW": T2MDEW,
+            "result": result,
+            "confidence": round(confidence*100, 2)
+        }
+        Irrigation.saved_data(prediction_result,user_id)
+
 
         return jsonify({
             'prediction': result,

@@ -26,3 +26,4 @@ class FertilizerModel:
             {"user_id": user_id},  # Filter by user ID
             {'_id': 0}  # Exclude MongoDB's internal _id field
         ))
+

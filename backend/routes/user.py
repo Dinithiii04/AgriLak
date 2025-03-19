@@ -3,6 +3,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from database import mongo
 from db.fertilizer_model import FertilizerModel
 from bson import ObjectId  # Import ObjectId for MongoDB
+from db.irrgation_db import Irrigation
 
 user_bp = Blueprint('user', __name__)
 
@@ -23,11 +24,16 @@ def get_profile():
     # Retrieve user's past fertilizer predictions
     predictions = FertilizerModel.get_user_predictions(user_id)
 
+    irrigationHistory=Irrigation.get_user_irrigation_predictions(user_id)
+
     user_data = {
         'username': user.get('username'),
         'email': user.get('email'),
         'created_at': user.get('created_at'),
-        'predictions': predictions  # Include user's prediction history
+        'predictions': predictions,  # Include user's prediction history
+        'irrigationHistory':irrigationHistory
     }
+
+
 
     return jsonify({'profile': user_data}), 200
