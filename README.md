@@ -103,9 +103,9 @@ root/
 | Name | Role |
 |------|------|
 | [Ranudee Fernando](https://github.com/RanudeeFernando) | Paddy Yield Prediction |
-| [Dilshan Indigahawela] | Paddy Disease Detection |
-| [Dinithi Anthony] | Fertilizer Recommendation |
-| [Binara Mendis] | Irrigation Optimization |
+| [Dilshan Indigahawela](https://github.com/dilshanindi) | Paddy Disease Detection |
+| [Dinithi Anthony](https://github.com/Dinithiii04) | Fertilizer Recommendation |
+| [Binara Mendis](https://github.com/BinaraMendis7) | Irrigation Optimization |
 
 
 ## 📜 Getting Started
