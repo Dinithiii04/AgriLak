@@ -12,7 +12,7 @@ AGRILAK is an intelligent agricultural management system designed to revolutioni
 
 ## 🏗 Technology Stack:
 
-![Tech Stack](docs/techstack.png)
+![Tech Stack](techstack.png)
 
 - **🚀 Machine Learning & Deep Learning** – Applied Random Forest for predictive analytics and CNNs for image-based classification.
 - **🖥 Flask Backend** – Built a scalable API for handling predictions and data management.
@@ -130,11 +130,9 @@ root/
    npm run dev
    ```
 
----
 
 ## 📬 Contact
 For questions or issues, reach out to the project maintainer.
 
 ---
 
-🔗 **Tags**: `#MachineLearning` `#AI` `#SustainableAgriculture` `#DeepLearning` `#Flask` `#NextJS` `#MongoDB` `#PrecisionFarming`
