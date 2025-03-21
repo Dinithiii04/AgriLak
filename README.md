@@ -100,12 +100,7 @@ root/
 
 ## 🏷️ Contributors
 
-| Name | Role |
-|------|------|
-| [Ranudee Fernando] | Paddy Yield Prediction |
-| [Dilshan Indigahawela] | Paddy Disease Detection |
-| [Dinithi Anthony] | Fertilizer Recommendation |
-| [Binara Mendis] | Irrigation Optimization |
+![Contributors](https://img.shields.io/github/contributors/dinithiii04/AgriLak)
 
 
 ## 📜 Getting Started
