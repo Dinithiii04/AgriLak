@@ -30,73 +30,6 @@ AGRILAK is an intelligent agricultural management system designed to revolutioni
 ## 🎥 Demo Video
 [![Watch the Demo](https://img.youtube.com/vi/?/maxresdefault.jpg)](https://www.youtube.com/watch?v=?)
 
-## 📁 Folder Structure
-
-The project is organized into the following structure:
-
-```
-root/
-├── backend/                         # Flask backend
-│   ├── app/                         # Main application directory
-│   │   ├── __init__.py              # Flask app initialization
-│   │   ├── routes/                  # API routes
-│   │   ├── services/                # Business logic
-│   │   ├── models/                  # Pre-trained and saved models
-│   │   ├── static/                  # Static files
-│   │   ├── templates/               # HTML templates
-│   │   └── utils/                   # Helper functions
-│   ├── tests/                       # Unit tests for backend
-│   ├── requirements.txt             # Python dependencies
-│   ├── .env                         # Environment variables
-│   └── run.py                       # Flask app entry point
-├── frontend/                        # Next.js frontend
-│   ├── public/                      # Public assets
-│   ├── src/                         # Frontend source files
-│   │   ├── components/              # Reusable React components
-│   │   ├── pages/                   # Next.js pages
-│   │   ├── services/                # API integrations
-│   │   ├── styles/                  # CSS/SCSS files
-│   │   └── utils/                   # Helper functions
-│   ├── .env.local                   # Frontend environment variables
-│   ├── next.config.js               # Next.js configuration
-│   ├── package.json                 # Node.js dependencies
-│   └── tsconfig.json                # TypeScript configuration
-├── datasets/                        # Project datasets
-│   ├── raw/                         # Unprocessed datasets
-│   └── processed/                   # Processed datasets
-├── notebooks/                       # Jupyter notebooks
-├── docs/                            # Documentation
-│   ├── README.md
-│   ├── API_DOCS.md                  # API documentation
-│   └── architecture_diagram.png
-├── .gitignore                       # Ignored files for Git
-└── docker/                          # Docker configuration
-    ├── backend.Dockerfile
-    ├── frontend.Dockerfile
-    └── docker-compose.yml
-```
-
-
-## 💻 Coding Practices
-
-### Backend (Flask)
-- Follow **PEP 8** for Python code formatting.
-- Use **blueprints** for organizing routes.
-- Write modular code in the `services` and `utils` directories.
-- Use environment variables for sensitive information (e.g., API keys).
-- Add type hints wherever possible to improve code readability.
-
-### Frontend (Next.js)
-- Use **ESLint** and **Prettier** for code formatting.
-- Write reusable React components and organize them in `components`.
-- Use environment variables for API endpoints.
-- Ensure CSS/SCSS files are modular and scoped to components.
-- Avoid inline styles unless absolutely necessary.
-
-### Jupyter Notebooks
-- Keep notebooks clean and well-documented.
-- Use Markdown cells for explaining steps and results.
-- Save outputs only if necessary to reduce file size.
 
 ## 🏷️ Contributors
 
@@ -111,11 +44,15 @@ root/
 ## 📜 Getting Started
 
 ### Backend Setup
-1. Install Python dependencies:
+1. Create a virtual environment
+   ```bash
+   python -m venv venv
+   ```
+2. Install Python dependencies:
    ```bash
    pip install -r requirements.txt
    ```
-2. Run the Flask app:
+3. Run the Flask app:
    ```bash
    python run.py
    ```
