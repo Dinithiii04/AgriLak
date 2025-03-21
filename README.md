@@ -100,7 +100,7 @@ root/
 
 ## 🏷️ Contributors
 
-![Contributors](https://img.shields.io/github/contributors/dinithiii04/AgriLak)
+![Contributors](https://img.shields.io/github/contributors/Dinithiii04/AgriLak)
 
 
 ## 📜 Getting Started
