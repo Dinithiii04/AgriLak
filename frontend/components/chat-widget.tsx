@@ -450,7 +450,7 @@ You are now ready to assist farmers with all their paddy farming inquiries!`
         </button>
 
         <div className="w-20 h-20 overflow-hidden">
-          <Image src="images/chatbot.gif" alt="Agro Bot" width={100} height={100} />
+          <Image src="images/bot.gif" alt="Agro Bot" width={100} height={100} />
         </div>
       </div>
 
