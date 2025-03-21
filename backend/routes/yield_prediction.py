@@ -3,95 +3,68 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 import joblib
 import numpy as np
 import pandas as pd
-# from db.yield_model import YieldModel
 
 # Define Blueprint
 yield_bp = Blueprint('yield', __name__)
 
-# Load Model and Scaler
+# Load Model
 try:
-    model = joblib.load('models/yield_prediction/yield_pred_model.pkl')
-    scaler = joblib.load('models/yield_prediction/yield_scaler.pkl')
-    print("Yield prediction model and scaler loaded successfully!")
-
+    model = joblib.load('models/yield_prediction/best-rf-yield.pkl')
+    print("Yield prediction model loaded successfully!")
 except Exception as e:
-    print(f"Error loading model/scaler: {e}")
-    model, scaler = None, None
+    print(f"Error loading model: {e}")
+    model = None
 
 # Feature names used in model
-feature_names = ["Oct_SRAD", "Sep_Wind", "Aug_SRAD", "Jan_SRAD", "Sep_SRAD", "Nov_Rain", "Aug_Rain", 'Aug_RH',
-                 "District_AMPARA", "District_ANURADHAPURA", "District_HAMBANTOTA", "District_POLONNARUWA"]
+feature_names = ['Aug_Tmax', 'Aug_RH', 'Sep_RH', 'Oct_SRAD', 'Nov_SRAD', 'Dec_SRAD', 'Dec_RH', 'Dec_Rain']
 
-
-def predict_yield_rf(data):
+# Prediction function with threshold check
+def predict_yield_rf(data, threshold=0.55):
     try:
         # Convert input to DataFrame
         X_input_df = pd.DataFrame([data], columns=feature_names)
 
-        # Separate numerical and categorical columns
-        numerical_columns = ['Aug_RH', 'Aug_Rain', 'Aug_SRAD', 'Jan_SRAD', 'Nov_Rain', 'Oct_SRAD', 'Sep_SRAD', 'Sep_Wind']
-        X_input_numerical = X_input_df[numerical_columns]
-        X_input_categorical = X_input_df.iloc[:, 8:]
+        # Predict class probabilities
+        probabilities = model.predict_proba(X_input_df)[0]
+        predicted_class = model.classes_[np.argmax(probabilities)]
+        confidence = np.max(probabilities)
 
-        # Scale numerical features
-        X_input_numerical_scaled = scaler.transform(X_input_numerical)
-
-        # Combine scaled numerical and categorical features
-        X_input_scaled_df = pd.DataFrame(np.hstack((X_input_numerical_scaled, X_input_categorical)),
-                                         columns=feature_names)
-
-        # Get predictions from all trees in the forest
-        tree_predictions = np.array([tree.predict(X_input_scaled_df) for tree in model.estimators_])
-
-        # Mean prediction
-        mean_prediction = tree_predictions.mean()
-
-        # Standard deviation (as an uncertainty estimate)
-        std_prediction = tree_predictions.std()
-
-        # Confidence Interval (95% CI using 1.96 * std)
-        lower_bound = mean_prediction - (1.96 * std_prediction)
-        upper_bound = mean_prediction + (1.96 * std_prediction)
-
-        # Calculate uncertainty percentage
-        uncertainty_percentage = (std_prediction / mean_prediction) * 100 if mean_prediction != 0 else 0
-
-        # Calculate confidence percentage
-        confidence_percentage = 100 - uncertainty_percentage
-
-        return {
-            "predicted_yield": round(mean_prediction, 2),
-            "confidence_interval": [round(lower_bound, 2), round(upper_bound, 2)],
-            "uncertainty": round(std_prediction, 2),
-            "confidence_percentage": round(confidence_percentage, 2)
-        }
+        if confidence < threshold:
+            return {
+                "predicted_class": "Uncertain",
+                "confidence": round(confidence * 100, 2)
+            }
+        else:
+            return {
+                "predicted_class": predicted_class,
+                "confidence": round(confidence * 100, 2)
+            }
 
     except Exception as e:
         print(f"Prediction error: {e}")
         return None
 
-
+# Route to handle predictions
 @yield_bp.route('/predict', methods=['POST'])
 # @jwt_required()
-
 def predict_yield():
     data = request.get_json()
 
-    required_fields = feature_names
-    for field in required_fields:
+    # Check all required fields are present
+    for field in feature_names:
         if field not in data:
             return jsonify({'error': f'Missing field: {field}'}), 400
 
-    if not model or not scaler:
+    if not model:
         return jsonify({'error': 'Model not loaded correctly.'}), 500
 
+    # Create ordered input array
     input_data = [data[field] for field in feature_names]
 
+    # Predict
     prediction_result = predict_yield_rf(input_data)
 
     if prediction_result is None:
         return jsonify({'error': 'Prediction failed.'}), 500
 
     return jsonify(prediction_result), 200
-
-

@@ -22,59 +22,42 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ArrowLeft } from "lucide-react";
 
 // Define schema for form validation
 const formSchema = z.object({
+  Aug_Tmax: z.string().min(1, "Required"),
   Aug_RH: z.string().min(1, "Required"),
-  Aug_Rain: z.string().min(1, "Required"),
-  Aug_SRAD: z.string().min(1, "Required"),
-  Jan_SRAD: z.string().min(1, "Required"),
-  Nov_Rain: z.string().min(1, "Required"),
+  Sep_RH: z.string().min(1, "Required"),
   Oct_SRAD: z.string().min(1, "Required"),
-  Sep_SRAD: z.string().min(1, "Required"),
-  Sep_Wind: z.string().min(1, "Required"),
-  District: z.string().min(1, "Required"),
+  Nov_SRAD: z.string().min(1, "Required"),
+  Dec_SRAD: z.string().min(1, "Required"),
+  Dec_RH: z.string().min(1, "Required"),
+  Dec_Rain: z.string().min(1, "Required"),
 });
 
 type FormValues = z.infer<typeof formSchema>;
 
 interface ApiResponse {
-  predicted_yield: string;
-  confidence_percentage: string;
-  message: string;
+  predicted_class: string;
+  confidence: number;
 }
 
-// Custom labels for form fields
 const customLabels: { [key in keyof FormValues]: string } = {
+  Aug_Tmax: "August Max Temperature (\u00b0C)",
   Aug_RH: "August Relative Humidity (%)",
-  Aug_Rain: "August Rainfall (mm, Monthly Sum)",
-  Aug_SRAD: "August Solar Radiation (MJ/m²/day)",
-  Jan_SRAD: "January Solar Radiation (MJ/m²/day)",
-  Nov_Rain: "November Rainfall (mm, Monthly Sum)",
-  Oct_SRAD: "October Solar Radiation (MJ/m²/day)",
-  Sep_SRAD: "September Solar Radiation (MJ/m²/day)",
-  Sep_Wind: "September Wind Speed (m/s)",
-  District: "Select District",
+  Sep_RH: "September Relative Humidity (%)",
+  Oct_SRAD: "October Solar Radiation (MJ/m\u00b2/day)",
+  Nov_SRAD: "November Solar Radiation (MJ/m\u00b2/day)",
+  Dec_SRAD: "December Solar Radiation (MJ/m\u00b2/day)",
+  Dec_RH: "December Relative Humidity (%)",
+  Dec_Rain: "December Rainfall (mm, Monthly Sum)",
 };
 
-// District one-hot encoding
-const districtMapping = {
-  "AMPARA": [1, 0, 0, 0],
-  "ANURADHAPURA": [0, 1, 0, 0],
-  "HAMBANTOTA": [0, 0, 1, 0],
-  "POLONNARUWA": [0, 0, 0, 1]
-};
-
-// Field order for structured UI
 const fieldOrder: (keyof FormValues)[] = [
-  "District",
-  "Aug_RH", "Aug_Rain", "Aug_SRAD",
-  "Sep_SRAD", "Sep_Wind",
-  "Oct_SRAD",
-  "Nov_Rain",
-  "Jan_SRAD"
+  "Aug_Tmax", "Aug_RH", "Sep_RH",
+  "Oct_SRAD", "Nov_SRAD", "Dec_SRAD",
+  "Dec_RH", "Dec_Rain"
 ];
 
 export default function PaddyYieldPredictionPage() {
@@ -85,15 +68,14 @@ export default function PaddyYieldPredictionPage() {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      Aug_Tmax: "",
       Aug_RH: "",
-      Aug_Rain: "",
-      Aug_SRAD: "",
-      Jan_SRAD: "",
-      Nov_Rain: "",
+      Sep_RH: "",
       Oct_SRAD: "",
-      Sep_SRAD: "",
-      Sep_Wind: "",
-      District: "POLONNARUWA",
+      Nov_SRAD: "",
+      Dec_SRAD: "",
+      Dec_RH: "",
+      Dec_Rain: "",
     },
   });
 
@@ -103,23 +85,12 @@ export default function PaddyYieldPredictionPage() {
     setResult(null);
 
     try {
-      const districtOneHot = districtMapping[values.District as keyof typeof districtMapping] || [0, 0, 0, 1];
+      const requestData = Object.fromEntries(
+        Object.entries(values).map(([key, value]) => [key, parseFloat(value)])
+      );
 
-      const requestData = {
-        ...Object.fromEntries(
-          Object.entries(values).map(([key, value]) => [key, key === "District" ? value : parseFloat(value)])
-        ),
-        District_AMPARA: districtOneHot[0],
-        District_ANURADHAPURA: districtOneHot[1],
-        District_HAMBANTOTA: districtOneHot[2],
-        District_POLONNARUWA: districtOneHot[3],
-      };
-
-      // API Call
       const response = await axiosInstance.post<ApiResponse>("/yield/predict", requestData);
-      console.log("API Response:", response.data);
-
-      setResult(response.data); // Store the response data
+      setResult(response.data);
     } catch (err: any) {
       console.error("Error fetching prediction:", err);
       setError(err.response?.data?.error || "Failed to fetch prediction. Please try again.");
@@ -133,33 +104,41 @@ export default function PaddyYieldPredictionPage() {
     form.reset();
   }
 
-  // If result is available, display the prediction instead of the form
   if (result) {
     return (
       <div className="container max-w-[1000px] py-8 space-y-8">
-        {/* Back to Form Button */}
         <Button variant="ghost" className="flex items-center gap-2" onClick={handleReset}>
           <ArrowLeft className="h-4 w-4" />
           Back to Form
         </Button>
 
-        {/* Prediction Result Card */}
         <Card>
           <CardHeader>
-            <CardTitle>Predicted Paddy Yield</CardTitle>
-            <CardDescription>Based on the provided weather parameters the predicted yield is:</CardDescription>
+            <CardTitle>Paddy Yield Prediction</CardTitle>
+            <CardDescription>The model classified your expected yield as:</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="text-center p-6 bg-primary/10 rounded-lg">
               <h3 className="text-3xl font-bold text-primary mb-2">
-                {result.predicted_yield} kg/ha
+                {result.predicted_class}
               </h3>
               <div className="text-sm text-muted-foreground">
-                Confidence: {result.confidence_percentage}%
+                Confidence: {result.confidence}%
               </div>
             </div>
-            <p className="text-muted-foreground">{result.message}</p>
+
+            {/* Show the range dynamically based on the prediction */}
+            <div className="p-4 bg-gray-900/10 rounded-lg">
+              <h4 className="text-lg font-semibold">Yield Range for {result.predicted_class}:</h4>
+              <p className="text-sm text-muted-foreground mt-2">
+                {result.predicted_class === "Low" && "1547.00 to 3223.00 kg/ha"}
+                {result.predicted_class === "Medium" && "3223.00 to 4899.00 kg/ha"}
+                {result.predicted_class === "High" && "4899.00 to 6575.00 kg/ha"}
+                {result.predicted_class === "Uncertain" && "Confidence too low to classify"}
+              </p>
+            </div>
           </CardContent>
+
         </Card>
       </div>
     );
@@ -167,49 +146,19 @@ export default function PaddyYieldPredictionPage() {
 
   return (
     <div className="container max-w-[1000px] py-12">
-      <h1 className="text-3xl font-bold">Paddy Yield Prediction</h1>
+      <h1 className="text-3xl font-bold">Paddy Yield Classification</h1>
       <p className="text-muted-foreground mt-2">
-        Provide the relevant weather parameters of Maha cultivation season to accurately predict the paddy yield. 
-        Make sure the values are in the correct units as specified below.
+        Provide the relevant weather parameters of the Maha cultivation season to classify the expected paddy yield.
       </p>
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 mt-8">
           <Card>
             <CardHeader>
-              <CardTitle>Weather Parameters for Maha Season</CardTitle>
+              <CardTitle>Input Weather Parameters</CardTitle>
             </CardHeader>
             <CardContent className="grid gap-6 grid-cols-2">
-              <div className="col-span-1">
-                <FormField
-                  control={form.control}
-                  name="District"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>{customLabels["District"]}</FormLabel>
-                      <FormControl>
-                        <Select onValueChange={(value) => form.setValue("District", value)} defaultValue={field.value}>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select a district" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {Object.keys(districtMapping).map((district) => (
-                              <SelectItem key={district} value={district}>
-                                {district}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-
-              <div className="col-span-1"></div>
-
-              {fieldOrder.filter(key => key !== "District").map((key) => (
+              {fieldOrder.map((key) => (
                 <FormField key={key} control={form.control} name={key} render={({ field }) => (
                   <FormItem>
                     <FormLabel>{customLabels[key]}</FormLabel>
@@ -224,7 +173,7 @@ export default function PaddyYieldPredictionPage() {
           </Card>
 
           <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading ? "Processing..." : "Predict Paddy Yield"}
+            {isLoading ? "Processing..." : "Classify Yield"}
           </Button>
 
           {error && <p className="text-red-500 text-center">{error}</p>}
