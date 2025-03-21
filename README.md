@@ -9,10 +9,11 @@ AGRILAK is an intelligent agricultural management system designed to revolutioni
 - **🦠 Pest & Disease Detection** – Uses deep learning to identify potential threats to crops from images and data inputs.
 - **🌱 Fertilizer Recommendations** – Suggests optimal fertilizer usage based on soil and weather conditions.
 - **💧 Irrigation Optimization** – Provides real-time water management recommendations to enhance efficiency.
-- **📊 Data Visualization & Analytics** – Interactive charts and graphs to present insights effectively.
-- **🛰️ Satellite & Sensor Data Integration** – Uses real-time environmental data for accurate predictions.
 
 ## 🏗 Technology Stack:
+
+![Tech Stack](docs/techstack.png)
+
 - **🚀 Machine Learning & Deep Learning** – Applied Random Forest for predictive analytics and CNNs for image-based classification.
 - **🖥 Flask Backend** – Built a scalable API for handling predictions and data management.
 - **🌐 Next.js & React Frontend** – Developed a modern and interactive user interface.
@@ -26,7 +27,8 @@ AGRILAK is an intelligent agricultural management system designed to revolutioni
 - ✅ **User-Centric Design** – Built a responsive web application with an intuitive interface for farmers.
 - ✅ **Improved Precision in Agriculture** – Enabled farmers to make smarter, data-driven decisions for increased productivity and environmental sustainability.
 
----
+## 🎥 Demo Video
+[![Watch the Demo](https://img.youtube.com/vi/?/maxresdefault.jpg)](https://www.youtube.com/watch?v=?)
 
 ## 📁 Folder Structure
 
@@ -74,7 +76,6 @@ root/
     └── docker-compose.yml
 ```
 
----
 
 ## 💻 Coding Practices
 
@@ -97,21 +98,15 @@ root/
 - Use Markdown cells for explaining steps and results.
 - Save outputs only if necessary to reduce file size.
 
----
-
 ## 🏷️ Contributors
 
 | Name | Role |
 |------|------|
-| [Your Name] | Lead Developer |
-| [Contributor 1] | Data Scientist |
-| [Contributor 2] | Backend Developer |
-| [Contributor 3] | Frontend Developer |
-| [Contributor 4] | Research & Documentation |
+| [Ranudee Fernando] | Paddy Yield Prediction |
+| [Dilshan Indigahawela] | Paddy Disease Detection |
+| [Dinithi Anthony] | Fertilizer Recommendation |
+| [Binara Mendis] | Irrigation Optimization |
 
-(Feel free to update contributors' names accordingly)
-
----
 
 ## 📜 Getting Started
 
