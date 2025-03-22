@@ -30,7 +30,7 @@ AGRILAK is an intelligent agricultural management system designed to revolutioni
 - ✅ **Improved Precision in Agriculture** – Enabled farmers to make smarter, data-driven decisions for increased productivity and environmental sustainability.
 
 ## 🎥 Demo Video
-[![Watch the Demo](https://img.youtube.com/vi/?/maxresdefault.jpg)](https://www.youtube.com/watch?v=?)
+[![Watch the Demo](https://drive.google.com/file/d/165v7UXbHcCoTBs6bQD-zjcny9No8mpvM/view)
 
 
 ## 🏷️ Contributors
