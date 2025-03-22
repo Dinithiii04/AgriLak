@@ -8,15 +8,8 @@ import { useEffect, useState } from "react"
 import GifLoader from "@/components/loader"
 // Pass lazy option so the hook doesn’t auto-fetch.
 import { useUserProfile } from "@/hooks/useUserProfile"
+import { useGwetTopData } from "@/hooks/use-get-soilData"
 
-const data = [
-  { month: "Jan", prediction: 4.2 },
-  { month: "Feb", prediction: 4.5 },
-  { month: "Mar", prediction: 4.8 },
-  { month: "Apr", prediction: 4.6 },
-  { month: "May", prediction: 4.9 },
-  { month: "Jun", prediction: 4.8 },
-]
 
 const alerts = [
   {
@@ -40,7 +33,7 @@ export default function DashboardPage() {
   const [isLoading, setIsLoading] = useState(true)
   // Assume useUserProfile accepts a lazy flag and returns a fetch function
   const { user, error, fetchUserProfile } = useUserProfile({ lazy: true })
-
+  const { data, loading } = useGwetTopData()
   useEffect(() => {
     // Simulate loading time
     const timer = setTimeout(() => {
@@ -60,6 +53,7 @@ export default function DashboardPage() {
   if (isLoading) {
     return <GifLoader />
   }
+
   return (
     <div className="container max-w-[1000px] py-8 space-y-8">
       <div>
@@ -97,12 +91,12 @@ export default function DashboardPage() {
 
       <div className="grid gap-6 grid-cols-1 lg:grid-cols-7">
         <Card className="p-6 lg:col-span-4">
-          <h2 className="text-lg font-semibold mb-4">Yield Predictions</h2>
+          <h2 className="text-lg font-semibold mb-4">Soil Moisture</h2>
           <div className="h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={data}>
                 <defs>
-                  <linearGradient id="prediction" x1="0" y1="0" x2="0" y2="1">
+                  <linearGradient id="moisture" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.2}/>
                     <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0}/>
                   </linearGradient>
@@ -126,9 +120,9 @@ export default function DashboardPage() {
                 />
                 <Area
                   type="monotone"
-                  dataKey="prediction"
+                  dataKey="moisture"
                   stroke="hsl(var(--primary))"
-                  fill="url(#prediction)"
+                  fill="url(#moisture)"
                 />
               </AreaChart>
             </ResponsiveContainer>
