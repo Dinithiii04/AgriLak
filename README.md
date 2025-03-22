@@ -2,6 +2,8 @@
 
 ## 📅 Project Timeline: Mar 2025 – Present
 
+![Detecta Banner](https://github.com/Dinithiii04/AgriLak/blob/add58d9a0894c24c544a3b32e48c9e8214e9eb1e/banner.png)
+
 AGRILAK is an intelligent agricultural management system designed to revolutionize paddy harvesting using AI-driven solutions. This full-stack application leverages machine learning and deep learning algorithms, such as Random Forest Classifiers and Convolutional Neural Networks (CNNs), to provide precise and data-driven recommendations for farmers.
 
 ## 🚀 Key Features:
