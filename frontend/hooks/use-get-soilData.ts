@@ -24,7 +24,7 @@ import { useState, useEffect } from "react";
           const gwetData = result.properties.parameter.GWETTOP;
   
           const formattedData = Object.entries(gwetData).map(([key, value]) => ({
-            month: monthMap[key.slice(-2)], // Extract last two digits as month
+            month: monthMap[key.slice(-2)], 
             moisture: value
           }));
   
