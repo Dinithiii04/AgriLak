@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { T2MResponse, MonthlyTemperature } from "@/types";
 
-const API_URL = "https://power.larc.nasa.gov/api/temporal/monthly/point?start=2001&end=2023&latitude=7.9147&longitude=81.0001&community=ag&parameters=T2M&header=true";
+const API_URL = "https://power.larc.nasa.gov/api/temporal/monthly/point?start=2021&end=2023&latitude=7.9147&longitude=81.0001&community=ag&parameters=T2M&header=true";
 
 const monthMap: Record<string, string> = {
   "01": "Jan", "02": "Feb", "03": "Mar", "04": "Apr",

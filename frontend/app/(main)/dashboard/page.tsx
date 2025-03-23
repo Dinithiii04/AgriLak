@@ -123,7 +123,7 @@ export default function DashboardPage() {
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--muted))" />
-              <XAxis dataKey="month" stroke="hsl(var(--muted-foreground))" tick={false} tickLine={false} />
+              <XAxis dataKey="month" stroke="hsl(var(--muted-foreground))" tickLine={false} />
               <YAxis stroke="hsl(var(--muted-foreground))" tickLine={false} axisLine={false} />
               <Tooltip contentStyle={{ backgroundColor: "hsl(var(--card))", border: "1px solid hsl(var(--border))" }} />
               <Area type="monotone" dataKey="temp" stroke="hsl(var(--primary))" fill="url(#temperature)" />
