@@ -16,7 +16,6 @@ const bannerImages = [
   "/images/Untitled design.jpg",
   "/images/yield.jpg",
   "/images/soooil.jpg"
-
 ]
 
 export function Hero() {
@@ -34,9 +33,12 @@ export function Hero() {
     setCurrentImage((prev) => (prev + 1) % bannerImages.length)
   }
 
-
   const prevImage = () => {
     setCurrentImage((prev) => (prev - 1 + bannerImages.length) % bannerImages.length)
+  }
+
+  const openDemo = () => {
+    window.open("https://www.youtube.com/watch?v=wJrCYnqfstc", "_blank")
   }
 
   return (
@@ -59,13 +61,15 @@ export function Hero() {
           </p>
         <div className="flex flex-wrap justify-center gap-6">
           <Button
-          variant="outline"
-          className="border-green-800 text-green-800 rounded-full"
-          onClick={() => setOpen(true)}>
-          Learn More
+            variant="outline"
+            className="border-green-800 text-green-800 rounded-full"
+            onClick={() => setOpen(true)}>
+            Learn More
           </Button>
-          <Button className="bg-green-800 hover:bg-[#37591f] text-white rounded-full px-8">
-           View Demo
+          <Button 
+            className="bg-green-800 hover:bg-[#37591f] text-white rounded-full px-8" 
+            onClick={openDemo}>
+            View Demo
           </Button>
         </div>
       </div>

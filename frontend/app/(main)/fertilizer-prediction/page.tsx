@@ -27,12 +27,12 @@ import { ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, Radar } fro
 
 // Zod schema for form validation
 const formSchema = z.object({
-  nitrogen: z.string().min(1, "Required"),
-  phosphorus: z.string().min(1, "Required"),
-  potassium: z.string().min(1, "Required"),
-  temperature: z.string().min(1, "Required"),
-  ph: z.string().min(1, "Required"),
-  rainfall: z.string().min(1, "Required"),
+  nitrogen: z.string().min(1, "Required").regex(/^\d+(\.\d+)?$/, "Must be a number"),
+  phosphorus: z.string().min(1, "Required").regex(/^\d+(\.\d+)?$/, "Must be a number"),
+  potassium: z.string().min(1, "Required").regex(/^\d+(\.\d+)?$/, "Must be a number"),
+  temperature: z.string().min(1, "Required").regex(/^\d+(\.\d+)?$/, "Must be a number"),
+  ph: z.string().min(1, "Required").regex(/^\d+(\.\d+)?$/, "Must be a number"),
+  rainfall: z.string().min(1, "Required").regex(/^\d+(\.\d+)?$/, "Must be a number"),
 });
 
 type FormValues = z.infer<typeof formSchema>;
