@@ -2,8 +2,10 @@ import os
 import io
 import numpy as np
 from flask import Blueprint, request, jsonify
+from flask_jwt_extended import jwt_required, get_jwt_identity
 import tensorflow as tf
 from PIL import Image
+from db.disease_db import DiseaseModel
 
 # Initialize Blueprint
 rice_disease_bp = Blueprint("rice_disease", __name__)
@@ -14,15 +16,15 @@ MODEL_PATH = os.path.join(BASE_DIR, "..", "models", "pest_disease", "rice_diseas
 
 try:
     model = tf.keras.models.load_model(MODEL_PATH)
-    print(" Model loaded successfully!")
+    print("Model loaded successfully!")
 except Exception as e:
-    raise RuntimeError(f" Failed to load model: {e}")
+    raise RuntimeError(f"Failed to load model: {e}")
 
 # Define classes based on dataset
 class_labels = ["bacterial_leaf_blight", "healthy", "leaf_blast", "leaf_scald"]
 
+
 def preprocess_image(image):
-    #Preprocess image for model prediction
     try:
         image = image.convert("RGB")  # Ensure image is in RGB mode
         image = image.resize((96, 96))  # Resize to match model input
@@ -32,8 +34,12 @@ def preprocess_image(image):
     except Exception as e:
         raise ValueError(f"Image preprocessing failed: {e}")
 
+
 @rice_disease_bp.route("/predict", methods=["POST"])
+@jwt_required()
 def predict():
+    user_id = get_jwt_identity()
+
     if "file" not in request.files:
         return jsonify({"error": "No file uploaded"}), 400
 
@@ -49,16 +55,22 @@ def predict():
 
         # Predict with model
         predictions = model.predict(img_array)
-        confidence = np.max(predictions)
+        confidence = float(np.max(predictions))
         predicted_class = class_labels[np.argmax(predictions)]
 
         # Set a threshold for confidence
         if confidence < 0.60:
             return jsonify({"error": "Model is unsure. Low confidence."}), 400
 
-        # Return prediction result
+        # Store result in MongoDB
+        prediction_data = {
+            "disease": predicted_class,
+            "confidence": confidence
+        }
+        DiseaseModel.save_prediction(prediction_data, user_id)
+
         return jsonify({
-            "disease": predicted_class,  #  Updated key to match frontend
+            "disease": predicted_class,
             "confidence": f"{confidence:.4f}"
         }), 200
 
