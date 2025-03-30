@@ -5,6 +5,7 @@ from db.fertilizer_model import FertilizerModel
 from bson import ObjectId
 from db.irrgation_db import Irrigation
 from db.disease_db import DiseaseModel
+from db.yield_db import YieldPrediction
 user_bp = Blueprint('user', __name__)
 
 # Get the current user's profile with fertilizer prediction history
@@ -23,6 +24,7 @@ def get_profile():
 
     predictions = FertilizerModel.get_user_predictions(user_id)
     irrigationHistory=Irrigation.get_user_irrigation_predictions(user_id)
+    yield_history = YieldPrediction.get_user_yield_predictions(user_id)
 
     user_data = {
         'username': user.get('username'),
@@ -30,6 +32,7 @@ def get_profile():
         'created_at': user.get('created_at'),
         'predictions': predictions,
         'irrigationHistory':irrigationHistory,
+        'yieldHistory': yield_history
     }
 
 
