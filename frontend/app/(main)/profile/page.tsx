@@ -85,6 +85,9 @@ export default function ProfilePage() {
       <Button variant={activeTable === 'irrigation' ? 'default' : 'outline'} onClick={() => handleTableChange('irrigation')}>
           Irrigation
       </Button>
+      <Button variant={activeTable === 'yield' ? 'default' : 'outline'} onClick={() => handleTableChange('yield')}>
+          Yield Prediction
+      </Button>
       </div>
 
       {/* Table Card for Prediction History (Fertilizer Recommendation) */}
