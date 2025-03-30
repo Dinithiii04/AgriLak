@@ -28,10 +28,10 @@ export default function ProfilePage() {
   const { logout } = useAuth();
 
   // State to manage which table is displayed
-  const [activeTable, setActiveTable] = useState<'irrigation' | 'fertilizer'>('fertilizer');
+  const [activeTable, setActiveTable] = useState<'irrigation' | 'fertilizer' | 'yield'>('fertilizer');
 
   // Switch between Irrigation History and Fertilizer Recommendation History
-  const handleTableChange = (table: 'irrigation' | 'fertilizer') => {
+  const handleTableChange = (table: 'irrigation' | 'fertilizer' | 'yield') => {
     setActiveTable(table);
   };
 
@@ -76,12 +76,16 @@ export default function ProfilePage() {
 
       {/* Button to switch between Irrigation and Fertilizer Recommendations */}
       <div className="flex gap-4">
-      <Button variant={activeTable === 'fertilizer' ? 'default' : 'outline'} onClick={() => handleTableChange('fertilizer')}>
+        <Button variant={activeTable === 'fertilizer' ? 'default' : 'outline'} onClick={() => handleTableChange('fertilizer')}>
           Fertilizer Recommendation
         </Button>
         <Button variant={activeTable === 'irrigation' ? 'default' : 'outline'} onClick={() => handleTableChange('irrigation')}>
           Irrigation
         </Button>
+        <Button variant={activeTable === 'yield' ? 'default' : 'outline'} onClick={() => handleTableChange('yield')}>
+          Yield Prediction
+        </Button>
+
       </div>
 
       {/* Table Card for Prediction History (Fertilizer Recommendation) */}
@@ -194,6 +198,69 @@ export default function ProfilePage() {
           </CardContent>
         </Card>
       )}
+
+       {/* Yield Prediction History */}
+       {activeTable === "yield" && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Yield Prediction History</CardTitle>
+            <CardDescription>
+              Your recent paddy yield predictions and input data
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {isLoading ? (
+              <p className="text-center text-muted-foreground">
+                Loading yield prediction history...
+              </p>
+            ) : error ? (
+              <p className="text-center text-red-500">{error}</p>
+            ) : !user?.yieldHistory || user.yieldHistory.length === 0 ? (
+              <div className="flex justify-center">
+                <Badge variant="outline" className="text-muted-foreground">
+                  No yield prediction history found
+                </Badge>
+              </div>
+            ) : (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Date</TableHead>
+                    <TableHead>Predicted Yield</TableHead>
+                    <TableHead>Confidence (%)</TableHead>
+                    <TableHead>Aug Tmax</TableHead>
+                    <TableHead>Aug RH</TableHead>
+                    <TableHead>Sep RH</TableHead>
+                    <TableHead>Oct SRAD</TableHead>
+                    <TableHead>Nov SRAD</TableHead>
+                    <TableHead>Dec SRAD</TableHead>
+                    <TableHead>Dec RH</TableHead>
+                    <TableHead>Dec Rain</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {user.yieldHistory.map((entry, index) => (
+                    <TableRow key={index}>
+                      <TableCell>{entry.prediction_time || "N/A"}</TableCell>
+                      <TableCell>{entry.prediction_result}</TableCell>
+                      <TableCell>{entry.confidence}%</TableCell>
+                      <TableCell>{entry.input_features?.Aug_Tmax}</TableCell>
+                      <TableCell>{entry.input_features?.Aug_RH}</TableCell>
+                      <TableCell>{entry.input_features?.Sep_RH}</TableCell>
+                      <TableCell>{entry.input_features?.Oct_SRAD}</TableCell>
+                      <TableCell>{entry.input_features?.Nov_SRAD}</TableCell>
+                      <TableCell>{entry.input_features?.Dec_SRAD}</TableCell>
+                      <TableCell>{entry.input_features?.Dec_RH}</TableCell>
+                      <TableCell>{entry.input_features?.Dec_Rain}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            )}
+          </CardContent>
+        </Card>
+      )}
+
     </div>
   );
 }
