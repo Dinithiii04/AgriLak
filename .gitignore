@@ -37,14 +37,10 @@ out/
 *.log
 
 # Jupyter Notebooks
-.ipynb_checkpoints/
-*.ipynb_checkpoint
 *.nbconvert/
 *.nb.html
 
 # Datasets
-datasets/raw/*
-datasets/processed/*
 !datasets/processed/.keep  # Allow empty processed directory if needed
 
 # Models
