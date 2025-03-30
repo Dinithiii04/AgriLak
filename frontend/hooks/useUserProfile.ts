@@ -7,6 +7,7 @@ interface UserProfile {
   created_at: string;
   predictions: Prediction[];
   irrigationHistory: IrrigationHistory[];
+  yieldHistory: YieldHistory[];
 }
 
 interface Prediction {     
@@ -29,6 +30,22 @@ interface IrrigationHistory {
   rainfall: number; 
   dewPoint: number; 
   recommendedIrrigationPlan: string;  
+}
+
+interface YieldHistory {
+  prediction_time: string;
+  prediction_result: string;
+  confidence: number;
+  input_features: {
+    Aug_Tmax: number;
+    Aug_RH: number;
+    Sep_RH: number;
+    Oct_SRAD: number;
+    Nov_SRAD: number;
+    Dec_SRAD: number;
+    Dec_RH: number;
+    Dec_Rain: number;
+  };
 }
 
 interface UseUserProfileOptions {
