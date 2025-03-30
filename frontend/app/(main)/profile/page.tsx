@@ -28,10 +28,10 @@ export default function ProfilePage() {
   const { logout } = useAuth();
 
   // State to manage which table is displayed
-  const [activeTable, setActiveTable] = useState<'irrigation' | 'fertilizer' | 'disease'>('fertilizer');
+  const [activeTable, setActiveTable] = useState<'irrigation' | 'fertilizer' | 'yield' | 'disease'>('fertilizer');
 
   // Switch between Irrigation History and Fertilizer Recommendation History
-  const handleTableChange = (table: 'irrigation' | 'fertilizer'| 'disease') => {
+  const handleTableChange = (table: 'irrigation' | 'fertilizer'| 'yield' | 'disease') => {
     setActiveTable(table);
   };
 
@@ -198,48 +198,111 @@ export default function ProfilePage() {
         </Card>
       )}
 
-{activeTable === 'disease' && (
-  <Card>
-    <CardHeader>
-      <CardTitle>Disease Prediction History</CardTitle>
-      <CardDescription>
-        Your recent disease diagnosis predictions
-      </CardDescription>
-    </CardHeader>
-    <CardContent>
-      {isLoading ? (
-        <p className="text-center text-muted-foreground">Loading disease history...</p>
-      ) : error ? (
-        <p className="text-center text-red-500">{error}</p>
-      ) : !user?.diseaseHistory || user.diseaseHistory.length === 0 ? (
-        <div className="flex justify-center">
-          <Badge variant="outline" className="text-muted-foreground">
-            No disease history found
-          </Badge>
-        </div>
-      ) : (
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Date</TableHead>
-              <TableHead>Disease</TableHead>
-              <TableHead>Confidence</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {user.diseaseHistory.map((entry, index) => (
-              <TableRow key={index}>
-                <TableCell>{new Date(entry.created_at).toLocaleDateString()}</TableCell>
-                <TableCell>{entry.disease}</TableCell>
-                <TableCell>{(entry.confidence * 100).toFixed(2)}%</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+      {/* Yield Prediction History */}
+      {activeTable === "yield" && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Yield Prediction History</CardTitle>
+            <CardDescription>
+              Your recent paddy yield predictions and input data
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {isLoading ? (
+              <p className="text-center text-muted-foreground">
+                Loading yield prediction history...
+              </p>
+            ) : error ? (
+              <p className="text-center text-red-500">{error}</p>
+            ) : !user?.yieldHistory || user.yieldHistory.length === 0 ? (
+              <div className="flex justify-center">
+                <Badge variant="outline" className="text-muted-foreground">
+                  No yield prediction history found
+                </Badge>
+              </div>
+            ) : (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Date</TableHead>
+                    <TableHead>Predicted Yield</TableHead>
+                    <TableHead>Confidence (%)</TableHead>
+                    <TableHead>Aug Tmax</TableHead>
+                    <TableHead>Aug RH</TableHead>
+                    <TableHead>Sep RH</TableHead>
+                    <TableHead>Oct SRAD</TableHead>
+                    <TableHead>Nov SRAD</TableHead>
+                    <TableHead>Dec SRAD</TableHead>
+                    <TableHead>Dec RH</TableHead>
+                    <TableHead>Dec Rain</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {user.yieldHistory.map((entry, index) => (
+                    <TableRow key={index}>
+                      <TableCell>{entry.prediction_time || "N/A"}</TableCell>
+                      <TableCell>{entry.prediction_result}</TableCell>
+                      <TableCell>{entry.confidence}%</TableCell>
+                      <TableCell>{entry.input_features?.Aug_Tmax}</TableCell>
+                      <TableCell>{entry.input_features?.Aug_RH}</TableCell>
+                      <TableCell>{entry.input_features?.Sep_RH}</TableCell>
+                      <TableCell>{entry.input_features?.Oct_SRAD}</TableCell>
+                      <TableCell>{entry.input_features?.Nov_SRAD}</TableCell>
+                      <TableCell>{entry.input_features?.Dec_SRAD}</TableCell>
+                      <TableCell>{entry.input_features?.Dec_RH}</TableCell>
+                      <TableCell>{entry.input_features?.Dec_Rain}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            )}
+          </CardContent>
+        </Card>
       )}
-    </CardContent>
-  </Card>
-)}
+
+
+      {activeTable === 'disease' && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Disease Prediction History</CardTitle>
+            <CardDescription>
+              Your recent disease diagnosis predictions
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {isLoading ? (
+              <p className="text-center text-muted-foreground">Loading disease history...</p>
+            ) : error ? (
+              <p className="text-center text-red-500">{error}</p>
+            ) : !user?.diseaseHistory || user.diseaseHistory.length === 0 ? (
+              <div className="flex justify-center">
+                <Badge variant="outline" className="text-muted-foreground">
+                  No disease history found
+                </Badge>
+              </div>
+            ) : (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Date</TableHead>
+                    <TableHead>Disease</TableHead>
+                    <TableHead>Confidence</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {user.diseaseHistory.map((entry, index) => (
+                    <TableRow key={index}>
+                      <TableCell>{new Date(entry.created_at).toLocaleDateString()}</TableCell>
+                      <TableCell>{entry.disease}</TableCell>
+                      <TableCell>{(entry.confidence * 100).toFixed(2)}%</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            )}
+          </CardContent>
+        </Card>
+      )}
 
     </div>
   );
