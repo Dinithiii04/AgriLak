@@ -14,7 +14,7 @@ class DiseaseModel:
         return mongo.db.disease_predictions.insert_one(prediction_data)
 
     @staticmethod
-    def get_user_predictions(user_id):
+    def get_user_disease_predictions(user_id):
         # Retrieve all predictions made by a specific user
         return list(mongo.db.disease_predictions.find(
             {"user_id": user_id},  # Filter by user ID

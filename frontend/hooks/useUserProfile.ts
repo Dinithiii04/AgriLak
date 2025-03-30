@@ -7,6 +7,7 @@ interface UserProfile {
   created_at: string;
   predictions: Prediction[];
   irrigationHistory: IrrigationHistory[];
+  diseaseHistory: DiseaseHistory[];
 }
 
 interface Prediction {     
@@ -29,6 +30,12 @@ interface IrrigationHistory {
   rainfall: number; 
   dewPoint: number; 
   recommendedIrrigationPlan: string;  
+}
+
+interface DiseaseHistory {
+  disease: string;
+  confidence: number;
+  created_at: string;
 }
 
 interface UseUserProfileOptions {

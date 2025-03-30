@@ -1,13 +1,15 @@
 from flask import Blueprint, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from database import mongo
-from db.fertilizer_model import FertilizerModel
 from bson import ObjectId
+
+from db.fertilizer_model import FertilizerModel
 from db.irrgation_db import Irrigation
 from db.disease_db import DiseaseModel
+
 user_bp = Blueprint('user', __name__)
 
-# Get the current user's profile with fertilizer prediction history
+# Get the current user's profile with prediction histories
 @user_bp.route('/profile', methods=['GET'])
 @jwt_required()
 def get_profile():
@@ -21,16 +23,19 @@ def get_profile():
     if not user:
         return jsonify({'error': 'User not found.'}), 404
 
+    # Get prediction histories from all 3 models
     predictions = FertilizerModel.get_user_predictions(user_id)
-    irrigationHistory=Irrigation.get_user_irrigation_predictions(user_id)
+    irrigationHistory = Irrigation.get_user_irrigation_predictions(user_id)
+    diseaseHistory = DiseaseModel.get_user_disease_predictions(user_id)
 
+    # Include diseaseHistory in the response
     user_data = {
         'username': user.get('username'),
         'email': user.get('email'),
         'created_at': user.get('created_at'),
         'predictions': predictions,
-        'irrigationHistory':irrigationHistory,
+        'irrigationHistory': irrigationHistory,
+        'diseaseHistory': diseaseHistory
     }
-
 
     return jsonify({'profile': user_data}), 200
