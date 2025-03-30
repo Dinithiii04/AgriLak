@@ -3,6 +3,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 import joblib
 import numpy as np
 import pandas as pd
+from db.yield_db import YieldPrediction
 
 # Define Blueprint
 yield_bp = Blueprint('yield', __name__)
@@ -46,7 +47,7 @@ def predict_yield_rf(data, threshold=0.55):
 
 # Route to handle predictions
 @yield_bp.route('/predict', methods=['POST'])
-# @jwt_required()
+@jwt_required()
 def predict_yield():
     data = request.get_json()
 
@@ -66,5 +67,9 @@ def predict_yield():
 
     if prediction_result is None:
         return jsonify({'error': 'Prediction failed.'}), 500
+
+    # Save to MongoDB
+    user_id = get_jwt_identity()  # Get user ID from JWT token
+    YieldPrediction.save_prediction({**data, **prediction_result}, user_id)
 
     return jsonify(prediction_result), 200
