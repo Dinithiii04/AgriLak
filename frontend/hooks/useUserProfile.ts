@@ -8,6 +8,7 @@ interface UserProfile {
   predictions: Prediction[];
   irrigationHistory: IrrigationHistory[];
   diseaseHistory: DiseaseHistory[];
+  yieldHistory: YieldHistory[];
 }
 
 interface Prediction {     
@@ -36,6 +37,22 @@ interface DiseaseHistory {
   disease: string;
   confidence: number;
   created_at: string;
+}
+
+interface YieldHistory {
+  prediction_time: string;
+  prediction_result: string;
+  confidence: number;
+  input_features: {
+    Aug_Tmax: number;
+    Aug_RH: number;
+    Sep_RH: number;
+    Oct_SRAD: number;
+    Nov_SRAD: number;
+    Dec_SRAD: number;
+    Dec_RH: number;
+    Dec_Rain: number;
+  };
 }
 
 interface UseUserProfileOptions {

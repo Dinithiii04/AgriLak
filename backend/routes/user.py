@@ -6,6 +6,7 @@ from bson import ObjectId
 from db.fertilizer_model import FertilizerModel
 from db.irrgation_db import Irrigation
 from db.disease_db import DiseaseModel
+from db.yield_db import YieldPrediction
 
 user_bp = Blueprint('user', __name__)
 
@@ -27,6 +28,7 @@ def get_profile():
     predictions = FertilizerModel.get_user_predictions(user_id)
     irrigationHistory = Irrigation.get_user_irrigation_predictions(user_id)
     diseaseHistory = DiseaseModel.get_user_disease_predictions(user_id)
+    yield_history = YieldPrediction.get_user_yield_predictions(user_id)
 
     # Include diseaseHistory in the response
     user_data = {
@@ -35,7 +37,8 @@ def get_profile():
         'created_at': user.get('created_at'),
         'predictions': predictions,
         'irrigationHistory': irrigationHistory,
-        'diseaseHistory': diseaseHistory
+        'diseaseHistory': diseaseHistory,
+        'yieldHistory': yield_history
     }
 
     return jsonify({'profile': user_data}), 200
