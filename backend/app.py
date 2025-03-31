@@ -12,6 +12,7 @@ from routes.user import user_bp
 from utils.auth import auth_bp
 from routes.irrigation import irrigation_bp
 from routes.yield_prediction import yield_bp
+from routes.getInTouch import message_bp
 
 # Load environment variables
 load_dotenv()
@@ -36,6 +37,8 @@ def create_app():
     app.register_blueprint(rice_disease_bp, url_prefix='/disease')
     app.register_blueprint(irrigation_bp, url_prefix='/irrigation')
     app.register_blueprint(yield_bp, url_prefix='/yield')
+    app.register_blueprint(message_bp, url_prefix='/message')
+
 
 
     return app
