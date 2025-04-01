@@ -66,8 +66,8 @@ def pred():
         params = {
             "parameters": "T2M,RH2M,T2MDEW,T2M_RANGE,GWETTOP",
             "community": "AG",
-            "longitude": 80.7718,
-            "latitude": 7.8731,
+            "longitude": 81.0001,
+            "latitude": 7.9147,
             "start":structured_date,
             "end": structured_date,
             "format": "JSON",
