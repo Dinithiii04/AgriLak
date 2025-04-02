@@ -11,7 +11,7 @@ type TeamMember = {
 };
 
 const teamMembers: TeamMember[] = [
-  { id: 1, name: "Dilshan Indigahawela", image: "/images/1.png", color: "bg-[#142C14]" },
+  { id: 1, name: "Dilshan Kavishka", image: "/images/1.png", color: "bg-[#142C14]" },
   { id: 2, name: "Ranudee  Fernando ", image: "/images/3.png", color: "bg-[#2D5128]" },
   { id: 3, name: "Dinithi  Anthony", image: "/images/4.png", color: "bg-[#537B2F]" },
   { id: 4, name: "Binara  Mendis", image: "/images/8.png", color: "bg-[#8DA750]" },
