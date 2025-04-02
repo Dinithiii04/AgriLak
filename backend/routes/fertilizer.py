@@ -4,6 +4,7 @@ import joblib
 import numpy as np
 from db.fertilizer_model import FertilizerModel
 
+# Create a Blueprint for routes
 fertilizer_bp = Blueprint('fertilizer', __name__)
 
 # Load Model and Scaler
@@ -14,10 +15,12 @@ except Exception as e:
     print(f"Error loading model/scaler: {e}")
     rf_model, scaler = None, None
 
+# Mapping from model output class to fertilizer name
 fertilizer_mapping = {0: '50:26:26 NPK', 1: 'Urea'}
 
 def predict_fertilizer_rf(N, P, K, pH, Rainfall, Temperature):
     try:
+        # Convert inputs to NumPy array and scale it
         user_input = np.array([[N, P, K, pH, Rainfall, Temperature]])
         scaled_input = scaler.transform(user_input)
 
@@ -26,6 +29,7 @@ def predict_fertilizer_rf(N, P, K, pH, Rainfall, Temperature):
         predicted_class = np.argmax(probabilities)
         confidence = round(probabilities[predicted_class] * 100, 2)
 
+        # Confidence check - threshold
         if confidence < 72:
             return "No recommendation due to low confidence.", confidence
 
@@ -41,6 +45,7 @@ def predict_fertilizer():
     user_id = get_jwt_identity()
     data = request.get_json()
 
+    # Check for any missing required fields
     required_fields = ["Nitrogen", "Phosphorus", "Potassium", "pH", "Rainfall", "Temperature"]
     missing_fields = [field for field in required_fields if field not in data]
     if missing_fields:
@@ -49,6 +54,7 @@ def predict_fertilizer():
     if not rf_model or not scaler:
         return jsonify({'error': 'Model not loaded correctly.'}), 500
 
+    # Perform prediction using input data
     fertilizer, confidence = predict_fertilizer_rf(
         data["Nitrogen"],
         data["Phosphorus"],
@@ -61,6 +67,7 @@ def predict_fertilizer():
     if fertilizer is None:
         return jsonify({'error': 'Prediction failed.'}), 500
 
+    # Prepare and save prediction data
     prediction_data = {
         "user_id": user_id,
         **data,
@@ -70,6 +77,7 @@ def predict_fertilizer():
 
     FertilizerModel.save_prediction(prediction_data, user_id)
 
+    # Send response with prediction result
     return jsonify({
         'recommended_fertilizer': fertilizer,
         'confidence': f"{confidence}%"

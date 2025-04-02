@@ -132,7 +132,7 @@ export default function IrrigationOptimizationPage() {
                   <FormItem>
                     <FormLabel>Date</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter date (YYYYMMDD)" {...field} />
+                      <Input placeholder="Enter date (YYYY-MM-DD)" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
