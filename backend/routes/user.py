@@ -10,7 +10,7 @@ from db.yield_db import YieldPrediction
 
 user_bp = Blueprint('user', __name__)
 
-# Get the current user's profile with prediction histories
+
 @user_bp.route('/profile', methods=['GET'])
 @jwt_required()
 def get_profile():
@@ -24,13 +24,13 @@ def get_profile():
     if not user:
         return jsonify({'error': 'User not found.'}), 404
 
-    # Get prediction histories from all 3 models
+
     predictions = FertilizerModel.get_user_predictions(user_id)
     irrigationHistory = Irrigation.get_user_irrigation_predictions(user_id)
     diseaseHistory = DiseaseModel.get_user_disease_predictions(user_id)
     yield_history = YieldPrediction.get_user_yield_predictions(user_id)
 
-    # Include diseaseHistory in the response
+   
     user_data = {
         'username': user.get('username'),
         'email': user.get('email'),

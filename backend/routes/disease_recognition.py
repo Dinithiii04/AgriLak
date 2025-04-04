@@ -26,7 +26,7 @@ def preprocess_image(image):
         image = image.convert("RGB")
         image = image.resize((96, 96))
         img_array = np.array(image) / 255.0
-        img_array = np.expand_dims(img_array, axis=0)  
+        img_array = np.expand_dims(img_array, axis=0)
         return img_array
     except Exception as e:
         raise ValueError(f"Image preprocessing failed: {e}")
