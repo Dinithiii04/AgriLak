@@ -13,22 +13,18 @@ from utils.auth import auth_bp
 from routes.irrigation import irrigation_bp
 from routes.yield_prediction import yield_bp
 
-# Load environment variables
 load_dotenv()
 
 def create_app():
     app = Flask(__name__)
     CORS(app)
 
-    # Set JWT Secret Key
     app.config['JWT_SECRET_KEY'] = os.environ.get('JWT_SECRET_KEY', 'your_secret_key')
 
-    # Initialize DB and JWT
     init_db(app)
     jwt = JWTManager(app)
     bcrypt = Bcrypt(app)
 
-    # Import and register Blueprints
 
     app.register_blueprint(auth_bp, url_prefix='/auth')
     app.register_blueprint(fertilizer_bp, url_prefix='/fertilizer')
