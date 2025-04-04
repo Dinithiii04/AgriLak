@@ -53,7 +53,7 @@ def predict():
         confidence = float(np.max(predictions))
         predicted_class = class_labels[np.argmax(predictions)]
 
-        if confidence < 0.55:
+        if confidence < 0.60:
             return jsonify({"error": "Model is unsure. Low confidence."}), 400
 
         prediction_data = {
