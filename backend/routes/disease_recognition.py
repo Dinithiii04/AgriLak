@@ -23,10 +23,10 @@ class_labels = ["bacterial_leaf_blight", "healthy", "leaf_blast", "leaf_scald"]
 
 def preprocess_image(image):
     try:
-        image = image.convert("RGB")  # Ensure image is in RGB mode
-        image = image.resize((96, 96))  # Resize to match model input
-        img_array = np.array(image) / 255.0  # Normalize pixel values
-        img_array = np.expand_dims(img_array, axis=0)  # Add batch dimension
+        image = image.convert("RGB")
+        image = image.resize((96, 96))
+        img_array = np.array(image) / 255.0
+        img_array = np.expand_dims(img_array, axis=0)  
         return img_array
     except Exception as e:
         raise ValueError(f"Image preprocessing failed: {e}")
