@@ -20,7 +20,7 @@ except Exception as e:
 feature_names = ['Aug_Tmax', 'Aug_RH', 'Sep_RH', 'Oct_SRAD', 'Nov_SRAD', 'Dec_SRAD', 'Dec_RH', 'Dec_Rain']
 
 # Prediction function with threshold check
-def predict_yield_rf(data, threshold=0.55):
+def predict_yield_rf(data, threshold=0.5245):
     try:
         # Convert input to DataFrame
         X_input_df = pd.DataFrame([data], columns=feature_names)
